@@ -146,19 +146,43 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <div class="tab" onclick="filterTeam('Financiën')">💰 Financiën<span class="count">2</span></div>
     <div class="tab" onclick="filterTeam('Warehouse')">🏭 Warehouse<span class="count">1</span></div>
   </div>
-  <div class="feed" id="feed"></div>
-</div>
+  <div class="feed">
 
-<script>
-const emails=[
-{id:4,from:"Marco Bakker",company:"De Vries Transport",email:"m.bakker@devriestransport.nl",
-subject:"Levering order #8842 wordt ca. 3 uur later",date:"13 apr · 07:15",
-category:"vertraging",categoryLabel:"Vertraging",urgency:"hoog",urgencyLabel:"Hoog",
-summary:"Levering order #8842 aan Blokker DC Geldermalsen wordt circa 3 uur later door file op de A2 bij Eindhoven.",
-facts:["Order #8842 · 14 pallets","ETA 13:00-14:00 (was 10:00)","A2 afgesloten · Eindhoven"],
-team:"Klantenservice",teamIcon:"📞",
-action:"Blokker DC direct informeren over vertraagde levering",
-body:`Goedemorgen,
+    <!-- KAART 1: Marco Bakker — Klantenservice -->
+    <div class="email-card cat-vertraging" data-team="Klantenservice">
+      <div class="card-top">
+        <div class="card-left">
+          <div class="card-meta-row">
+            <div><div class="card-from">Marco Bakker</div><div class="card-company">De Vries Transport</div></div>
+          </div>
+          <div class="card-subject">Levering order #8842 wordt ca. 3 uur later</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge vertraging">Vertraging</span>
+          <span class="badge-urg hoog">Hoog</span>
+          <span class="card-date">13 apr · 07:15</span>
+        </div>
+      </div>
+      <div class="card-summary">Levering order #8842 aan Blokker DC Geldermalsen wordt circa 3 uur later door file op de A2 bij Eindhoven.</div>
+      <div class="card-facts">
+        <span class="fact-chip">Order #8842 · 14 pallets</span>
+        <span class="fact-chip">ETA 13:00-14:00 (was 10:00)</span>
+        <span class="fact-chip">A2 afgesloten · Eindhoven</span>
+      </div>
+      <div class="card-bottom">
+        <div class="card-route">
+          <span class="route-label">Gerouteerd naar</span>
+          <span class="route-team">📞 Klantenservice</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="card-action">💡 Blokker DC direct informeren over vertraagde levering</div>
+          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+        </div>
+      </div>
+      <div class="card-orig">
+        <div class="orig-content">
+          <div class="orig-label">✉️ Origineel bericht</div>
+          <pre>Goedemorgen,
 
 Onze chauffeur staat vast op de A2 ter hoogte van Eindhoven door een ongeluk. De weg is in beide richtingen afgesloten.
 
@@ -174,16 +198,46 @@ Excuses voor het ongemak.
 Met vriendelijke groet,
 Marco Bakker
 Dispatcher
-De Vries Transport`},
+De Vries Transport</pre>
+        </div>
+      </div>
+    </div>
 
-{id:1,from:"Jan de Vries",company:"Van Transport B.V.",email:"j.devries@vantransport.nl",
-subject:"Vertraging container MSCU-449821 Rotterdam",date:"13 apr · 08:41",
-category:"vertraging",categoryLabel:"Vertraging",urgency:"medium",urgencyLabel:"Medium",
-summary:"Container MSCU-449821 komt één dag later aan in Rotterdam (16 i.p.v. 15 april) door congestie bij terminal Europoort.",
-facts:["ETA 16 apr (+1 dag)","BK-2026-08834 · 1x 40ft HC","Terminal Europoort congestie"],
-team:"Operations",teamIcon:"⚙️",
-action:"Ontvanger informeren, warehouse-slot 16 april checken",
-body:`Beste,
+    <!-- KAART 2: Jan de Vries — Operations -->
+    <div class="email-card cat-vertraging" data-team="Operations">
+      <div class="card-top">
+        <div class="card-left">
+          <div class="card-meta-row">
+            <div><div class="card-from">Jan de Vries</div><div class="card-company">Van Transport B.V.</div></div>
+          </div>
+          <div class="card-subject">Vertraging container MSCU-449821 Rotterdam</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge vertraging">Vertraging</span>
+          <span class="badge-urg medium">Medium</span>
+          <span class="card-date">13 apr · 08:41</span>
+        </div>
+      </div>
+      <div class="card-summary">Container MSCU-449821 komt één dag later aan in Rotterdam (16 i.p.v. 15 april) door congestie bij terminal Europoort.</div>
+      <div class="card-facts">
+        <span class="fact-chip">ETA 16 apr (+1 dag)</span>
+        <span class="fact-chip">BK-2026-08834 · 1x 40ft HC</span>
+        <span class="fact-chip">Terminal Europoort congestie</span>
+      </div>
+      <div class="card-bottom">
+        <div class="card-route">
+          <span class="route-label">Gerouteerd naar</span>
+          <span class="route-team">⚙️ Operations</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="card-action">💡 Ontvanger informeren, warehouse-slot 16 april checken</div>
+          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+        </div>
+      </div>
+      <div class="card-orig">
+        <div class="orig-content">
+          <div class="orig-label">✉️ Origineel bericht</div>
+          <pre>Beste,
 
 Hierbij informeren wij u dat container MSCU-449821 met bestemming Rotterdam een vertraging oploopt van één werkdag.
 
@@ -199,16 +253,46 @@ Wij houden u op de hoogte van verdere ontwikkelingen.
 
 Met vriendelijke groet,
 Jan de Vries
-Van Transport B.V.`},
+Van Transport B.V.</pre>
+        </div>
+      </div>
+    </div>
 
-{id:2,from:"Sandra Willems",company:"Beekman Logistics",email:"s.willems@beekmanlogistics.nl",
-subject:"Aangepaste tarieven Benelux per 1 mei",date:"12 apr · 14:20",
-category:"prijswijziging",categoryLabel:"Prijswijziging",urgency:"hoog",urgencyLabel:"Hoog",
-summary:"Beekman Logistics verhoogt Benelux-tarieven gemiddeld 4,5% per 1 mei. Pallettarief NL gaat van €68 naar €71.",
-facts:["Per 1 mei 2026","Gemiddeld +4,5%","Pallet NL: €68 → €71"],
-team:"Financiën",teamIcon:"💰",
-action:"Tarievenlijst vergelijken, heronderhandeling overwegen",
-body:`Geachte relatie,
+    <!-- KAART 3: Sandra Willems — Financiën -->
+    <div class="email-card cat-prijswijziging" data-team="Financiën">
+      <div class="card-top">
+        <div class="card-left">
+          <div class="card-meta-row">
+            <div><div class="card-from">Sandra Willems</div><div class="card-company">Beekman Logistics</div></div>
+          </div>
+          <div class="card-subject">Aangepaste tarieven Benelux per 1 mei</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge prijswijziging">Prijswijziging</span>
+          <span class="badge-urg hoog">Hoog</span>
+          <span class="card-date">12 apr · 14:20</span>
+        </div>
+      </div>
+      <div class="card-summary">Beekman Logistics verhoogt Benelux-tarieven gemiddeld 4,5% per 1 mei. Pallettarief NL gaat van €68 naar €71.</div>
+      <div class="card-facts">
+        <span class="fact-chip">Per 1 mei 2026</span>
+        <span class="fact-chip">Gemiddeld +4,5%</span>
+        <span class="fact-chip">Pallet NL: €68 → €71</span>
+      </div>
+      <div class="card-bottom">
+        <div class="card-route">
+          <span class="route-label">Gerouteerd naar</span>
+          <span class="route-team">💰 Financiën</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="card-action">💡 Tarievenlijst vergelijken, heronderhandeling overwegen</div>
+          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+        </div>
+      </div>
+      <div class="card-orig">
+        <div class="orig-content">
+          <div class="orig-label">✉️ Origineel bericht</div>
+          <pre>Geachte relatie,
 
 Per 1 mei 2026 passen wij onze tarieven aan voor distributieverkeer binnen de Benelux. De aanpassing bedraagt gemiddeld 4,5% en is het gevolg van gestegen brandstof- en personeelskosten.
 
@@ -220,21 +304,49 @@ De nieuwe tarievenlijst vindt u in de bijlage. De belangrijkste wijzigingen:
 
 Bestaande contracten met vaste prijsafspraken blijven ongewijzigd tot de einddatum.
 
-Heeft u vragen? Neem gerust contact op.
-
 Met vriendelijke groet,
 Sandra Willems
 Commercieel Manager
-Beekman Logistics`},
+Beekman Logistics</pre>
+        </div>
+      </div>
+    </div>
 
-{id:5,from:"Annemiek Groen",company:"Warehousing Plus B.V.",email:"a.groen@warehousingplus.nl",
-subject:"Aanpassing opslagtarieven per 1 juni 2026",date:"10 apr · 16:33",
-category:"prijswijziging",categoryLabel:"Prijswijziging",urgency:"hoog",urgencyLabel:"Hoog",
-summary:"Warehousing Plus verhoogt opslagtarieven per 1 juni met 7-9% vanwege energiekosten en CPI-indexatie.",
-facts:["Per 1 juni 2026","Pallet: €2,85 → €3,10/wk","Handling: €3,50 → €3,75"],
-team:"Financiën",teamIcon:"💰",
-action:"Impact berekenen, alternatieve warehouses vergelijken",
-body:`Geachte huurder,
+    <!-- KAART 4: Annemiek Groen — Financiën -->
+    <div class="email-card cat-prijswijziging" data-team="Financiën">
+      <div class="card-top">
+        <div class="card-left">
+          <div class="card-meta-row">
+            <div><div class="card-from">Annemiek Groen</div><div class="card-company">Warehousing Plus B.V.</div></div>
+          </div>
+          <div class="card-subject">Aanpassing opslagtarieven per 1 juni 2026</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge prijswijziging">Prijswijziging</span>
+          <span class="badge-urg hoog">Hoog</span>
+          <span class="card-date">10 apr · 16:33</span>
+        </div>
+      </div>
+      <div class="card-summary">Warehousing Plus verhoogt opslagtarieven per 1 juni met 7-9% vanwege energiekosten en CPI-indexatie.</div>
+      <div class="card-facts">
+        <span class="fact-chip">Per 1 juni 2026</span>
+        <span class="fact-chip">Pallet: €2,85 → €3,10/wk</span>
+        <span class="fact-chip">Handling: €3,50 → €3,75</span>
+      </div>
+      <div class="card-bottom">
+        <div class="card-route">
+          <span class="route-label">Gerouteerd naar</span>
+          <span class="route-team">💰 Financiën</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="card-action">💡 Impact berekenen, alternatieve warehouses vergelijken</div>
+          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+        </div>
+      </div>
+      <div class="card-orig">
+        <div class="orig-content">
+          <div class="orig-label">✉️ Origineel bericht</div>
+          <pre>Geachte huurder,
 
 Door gestegen energiekosten en de jaarlijkse CPI-indexatie passen wij onze opslagtarieven aan per 1 juni 2026.
 
@@ -245,21 +357,49 @@ De nieuwe tarieven:
 
 Deze tarieven gelden voor alle klanten zonder lopend contract met vaste prijsafspraak.
 
-De volledige tarievenlijst 2026-2027 sturen wij u volgende week toe.
-
 Met vriendelijke groet,
 Annemiek Groen
 Directeur
-Warehousing Plus B.V.`},
+Warehousing Plus B.V.</pre>
+        </div>
+      </div>
+    </div>
 
-{id:3,from:"Pieter Kolen",company:"Jungheinrich Nederland",email:"p.kolen@jungheinrich.nl",
-subject:"Nieuw: ETV 216i reachtruck met verlengde batterijduur",date:"11 apr · 10:05",
-category:"productupdate",categoryLabel:"Product Update",urgency:"laag",urgencyLabel:"Laag",
-summary:"Jungheinrich introduceert de ETV 216i reachtruck met 30% langere batterijduur. Proefperiode van 2 weken beschikbaar.",
-facts:["Batterij: 12 uur (+30%)","Snelladen: 80% in 45 min","2 weken proefperiode"],
-team:"Warehouse",teamIcon:"🏭",
-action:"Beoordelen of demo inplannen zinvol is voor vervanging huidig materieel",
-body:`Beste,
+    <!-- KAART 5: Pieter Kolen — Warehouse -->
+    <div class="email-card cat-productupdate" data-team="Warehouse">
+      <div class="card-top">
+        <div class="card-left">
+          <div class="card-meta-row">
+            <div><div class="card-from">Pieter Kolen</div><div class="card-company">Jungheinrich Nederland</div></div>
+          </div>
+          <div class="card-subject">Nieuw: ETV 216i reachtruck met verlengde batterijduur</div>
+        </div>
+        <div class="card-badges">
+          <span class="badge productupdate">Product Update</span>
+          <span class="badge-urg laag">Laag</span>
+          <span class="card-date">11 apr · 10:05</span>
+        </div>
+      </div>
+      <div class="card-summary">Jungheinrich introduceert de ETV 216i reachtruck met 30% langere batterijduur. Proefperiode van 2 weken beschikbaar.</div>
+      <div class="card-facts">
+        <span class="fact-chip">Batterij: 12 uur (+30%)</span>
+        <span class="fact-chip">Snelladen: 80% in 45 min</span>
+        <span class="fact-chip">2 weken proefperiode</span>
+      </div>
+      <div class="card-bottom">
+        <div class="card-route">
+          <span class="route-label">Gerouteerd naar</span>
+          <span class="route-team">🏭 Warehouse</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div class="card-action">💡 Beoordelen of demo inplannen zinvol is voor vervanging huidig materieel</div>
+          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+        </div>
+      </div>
+      <div class="card-orig">
+        <div class="orig-content">
+          <div class="orig-label">✉️ Origineel bericht</div>
+          <pre>Beste,
 
 Graag informeren wij u over onze nieuwe reachtruck, de ETV 216i. Dit model is nu beschikbaar met een lithium-ion batterij die 30% langer meegaat dan de vorige generatie.
 
@@ -271,74 +411,34 @@ Belangrijkste verbeteringen:
 
 Wij bieden een proefperiode van 2 weken aan zodat u het verschil in de praktijk kunt ervaren.
 
-Zullen we een afspraak inplannen voor een demo op uw locatie?
-
 Met vriendelijke groet,
 Pieter Kolen
 Accountmanager
-Jungheinrich Nederland`}
-];
-
-let activeFilter='alle';
-
-function filterTeam(team){
-  activeFilter=team;
-  document.querySelectorAll('.tab').forEach(t=>{
-    const label=t.textContent.replace(/\d+/g,'').trim();
-    if(team==='alle'&&label.startsWith('Alle')) t.classList.add('active');
-    else if(t.textContent.includes(team)) t.classList.add('active');
-    else t.classList.remove('active');
-  });
-  renderFeed();
-}
-
-function renderFeed(){
-  const filtered=activeFilter==='alle'?emails:emails.filter(e=>e.team===activeFilter);
-  document.getElementById('feed').innerHTML=filtered.map(e=>`
-    <div class="email-card cat-${e.category}" id="card-${e.id}">
-      <div class="card-top">
-        <div class="card-left">
-          <div class="card-meta-row">
-            <div><div class="card-from">${e.from}</div><div class="card-company">${e.company}</div></div>
-          </div>
-          <div class="card-subject">${e.subject}</div>
-        </div>
-        <div class="card-badges">
-          <span class="badge ${e.category}">${e.categoryLabel}</span>
-          <span class="badge-urg ${e.urgency}">${e.urgencyLabel}</span>
-          <span class="card-date">${e.date}</span>
-        </div>
-      </div>
-      <div class="card-summary">${e.summary}</div>
-      <div class="card-facts">${e.facts.map(f=>`<span class="fact-chip">${f}</span>`).join('')}</div>
-      <div class="card-bottom">
-        <div class="card-route">
-          <span class="route-label">Gerouteerd naar</span>
-          <span class="route-team">${e.teamIcon} ${e.team}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:16px">
-          <div class="card-action">💡 ${e.action}</div>
-          <button class="expand-btn" onclick="toggleOrig(${e.id})">Toon origineel ▾</button>
-        </div>
-      </div>
-      <div class="card-orig" id="orig-${e.id}">
-        <div class="orig-content">
-          <div class="orig-label">✉️ Origineel bericht</div>
-          <pre>${e.body}</pre>
+Jungheinrich Nederland</pre>
         </div>
       </div>
     </div>
-  `).join('');
+
+  </div>
+</div>
+
+<script>
+function filterTeam(team){
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.remove('active');
+    if(team==='alle'&&t.textContent.includes('Alle')) t.classList.add('active');
+    else if(t.textContent.includes(team)) t.classList.add('active');
+  });
+  document.querySelectorAll('.email-card').forEach(card=>{
+    card.style.display=(team==='alle'||card.dataset.team===team)?'':'none';
+  });
 }
 
-function toggleOrig(id){
-  const el=document.getElementById('orig-'+id);
-  const btn=el.parentElement.querySelector('.expand-btn');
-  el.classList.toggle('open');
-  btn.textContent=el.classList.contains('open')?'Verberg origineel ▴':'Toon origineel ▾';
+function toggleOrig(btn){
+  const orig=btn.closest('.email-card').querySelector('.card-orig');
+  orig.classList.toggle('open');
+  btn.textContent=orig.classList.contains('open')?'Verberg origineel ▴':'Toon origineel ▾';
 }
-
-renderFeed();
 </script>
 </body>
 </html>
