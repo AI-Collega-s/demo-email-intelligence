@@ -32,36 +32,42 @@
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* HEADER */
-.hdr{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.hdr-left{display:flex;align-items:center;gap:14px}
-.logo{width:38px;height:38px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;letter-spacing:-.02em}
-.hdr-title{font-size:16px;font-weight:700;color:var(--text)}
-.hdr-sub{font-size:12px;color:var(--muted);margin-top:1px}
-.hdr-right{display:flex;align-items:center;gap:16px}
-.hdr-status{display:flex;align-items:center;gap:7px;padding:6px 14px;background:var(--orange-light);border-radius:20px;font-size:12px;font-weight:600;color:var(--orange)}
-.hdr-dot{width:7px;height:7px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.stats{display:flex;gap:20px}
-.stat{text-align:center}
-.stat-num{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
+/* HIDDEN RADIO BUTTONS */
+.team-radio{display:none}
 
 /* MAIN LAYOUT */
 .main{max-width:1200px;margin:0 auto;padding:16px 32px}
 
 /* TEAM FILTER TABS */
 .tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.tab{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid var(--border);background:var(--white);color:var(--text2)}
+.tab{display:inline-flex;align-items:center;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid var(--border);background:var(--white);color:var(--text2)}
 .tab:hover{border-color:var(--orange);color:var(--orange)}
-.tab.active{background:var(--orange);color:#fff;border-color:var(--orange)}
-.tab .count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:10px;font-size:11px;margin-left:6px;padding:0 6px}
-.tab.active .count{background:rgba(255,255,255,.3)}
-.tab:not(.active) .count{background:var(--bg);color:var(--muted)}
+.tab .count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:10px;font-size:11px;margin-left:6px;padding:0 6px;background:var(--bg);color:var(--muted)}
+
+/* Active tab per radio state */
+#t-alle:checked ~ .main .tab-alle,
+#t-ops:checked ~ .main .tab-ops,
+#t-klant:checked ~ .main .tab-klant,
+#t-fin:checked ~ .main .tab-fin,
+#t-wh:checked ~ .main .tab-wh
+{background:var(--orange);color:#fff;border-color:var(--orange)}
+
+#t-alle:checked ~ .main .tab-alle .count,
+#t-ops:checked ~ .main .tab-ops .count,
+#t-klant:checked ~ .main .tab-klant .count,
+#t-fin:checked ~ .main .tab-fin .count,
+#t-wh:checked ~ .main .tab-wh .count
+{background:rgba(255,255,255,.3);color:#fff}
+
+/* Card filtering per radio state */
+#t-ops:checked ~ .main .email-card:not([data-team="Operations"]){display:none}
+#t-klant:checked ~ .main .email-card:not([data-team="Klantenservice"]){display:none}
+#t-fin:checked ~ .main .email-card:not([data-team="Financiën"]){display:none}
+#t-wh:checked ~ .main .email-card:not([data-team="Warehouse"]){display:none}
 
 /* EMAIL CARDS */
 .feed{display:flex;flex-direction:column;gap:12px}
-.email-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);transition:all .15s;cursor:pointer;position:relative;overflow:hidden}
+.email-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);transition:all .15s;position:relative;overflow:hidden}
 .email-card:hover{box-shadow:var(--shadow-lg);border-color:#d0cdc6}
 .email-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r)}
 .email-card.cat-vertraging::before{background:var(--red)}
@@ -96,24 +102,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .card-date{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
 .card-meta-row{display:flex;align-items:center;gap:16px;margin-bottom:10px}
 
-/* EXPAND ORIGINAL */
+/* EXPAND ORIGINAL — pure CSS via :has() */
+.orig-toggle{display:none}
 .card-orig{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.card-orig.open{max-height:600px}
+.email-card:has(.orig-toggle:checked) .card-orig{max-height:600px}
+.expand-btn{font-size:11px;color:var(--orange);font-weight:600;cursor:pointer;font-family:inherit;padding:0;user-select:none}
+.expand-btn:hover{color:var(--orange-dark)}
+.lbl-close{display:none}
+.email-card:has(.orig-toggle:checked) .lbl-open{display:none}
+.email-card:has(.orig-toggle:checked) .lbl-close{display:inline}
+
 .orig-content{padding:16px 20px;margin-top:14px;background:var(--bg);border-radius:var(--rs);border:1px solid var(--border)}
 .orig-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .orig-content pre{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:var(--text2);white-space:pre-wrap}
-.expand-btn{font-size:11px;color:var(--orange);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
-.expand-btn:hover{color:var(--orange-dark)}
 
 /* RESPONSIVE */
 @media(max-width:768px){
-  .hdr{padding:0 16px;height:auto;min-height:56px;flex-wrap:wrap;gap:8px;padding-top:10px;padding-bottom:10px}
-  .hdr-title{font-size:14px}
-  .hdr-sub{display:none}
-  .stats{gap:12px}
-  .stat-num{font-size:16px}
-  .stat-label{font-size:9px}
-  .hdr-status{font-size:11px;padding:5px 10px}
   .main{padding:16px}
   .tabs{gap:6px;margin-bottom:16px}
   .tab{padding:6px 12px;font-size:12px}
@@ -137,14 +141,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 </head>
 <body>
 
+<!-- HIDDEN RADIO BUTTONS — state machine voor tab-filtering -->
+<input type="radio" name="team" id="t-alle" class="team-radio" checked>
+<input type="radio" name="team" id="t-ops" class="team-radio">
+<input type="radio" name="team" id="t-klant" class="team-radio">
+<input type="radio" name="team" id="t-fin" class="team-radio">
+<input type="radio" name="team" id="t-wh" class="team-radio">
 
 <div class="main">
   <div class="tabs">
-    <div class="tab active" onclick="filterTeam('alle')">Alle mails<span class="count">5</span></div>
-    <div class="tab" onclick="filterTeam('Operations')">⚙️ Operations<span class="count">1</span></div>
-    <div class="tab" onclick="filterTeam('Klantenservice')">📞 Klantenservice<span class="count">1</span></div>
-    <div class="tab" onclick="filterTeam('Financiën')">💰 Financiën<span class="count">2</span></div>
-    <div class="tab" onclick="filterTeam('Warehouse')">🏭 Warehouse<span class="count">1</span></div>
+    <label for="t-alle" class="tab tab-alle">Alle mails<span class="count">5</span></label>
+    <label for="t-ops" class="tab tab-ops">⚙️ Operations<span class="count">1</span></label>
+    <label for="t-klant" class="tab tab-klant">📞 Klantenservice<span class="count">1</span></label>
+    <label for="t-fin" class="tab tab-fin">💰 Financiën<span class="count">2</span></label>
+    <label for="t-wh" class="tab tab-wh">🏭 Warehouse<span class="count">1</span></label>
   </div>
   <div class="feed">
 
@@ -176,7 +186,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </div>
         <div style="display:flex;align-items:center;gap:16px">
           <div class="card-action">💡 Blokker DC direct informeren over vertraagde levering</div>
-          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+          <input type="checkbox" id="orig1" class="orig-toggle">
+          <label for="orig1" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
       <div class="card-orig">
@@ -231,7 +242,8 @@ De Vries Transport</pre>
         </div>
         <div style="display:flex;align-items:center;gap:16px">
           <div class="card-action">💡 Ontvanger informeren, warehouse-slot 16 april checken</div>
-          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+          <input type="checkbox" id="orig2" class="orig-toggle">
+          <label for="orig2" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
       <div class="card-orig">
@@ -277,7 +289,7 @@ Van Transport B.V.</pre>
       <div class="card-facts">
         <span class="fact-chip">Per 1 mei 2026</span>
         <span class="fact-chip">Gemiddeld +4,5%</span>
-        <span class="fact-chip">Pallet NL: €68 → €71</span>
+        <span class="fact-chip">Pallet NL: €68 naar €71</span>
       </div>
       <div class="card-bottom">
         <div class="card-route">
@@ -286,7 +298,8 @@ Van Transport B.V.</pre>
         </div>
         <div style="display:flex;align-items:center;gap:16px">
           <div class="card-action">💡 Tarievenlijst vergelijken, heronderhandeling overwegen</div>
-          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+          <input type="checkbox" id="orig3" class="orig-toggle">
+          <label for="orig3" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
       <div class="card-orig">
@@ -298,7 +311,7 @@ Per 1 mei 2026 passen wij onze tarieven aan voor distributieverkeer binnen de Be
 
 De nieuwe tarievenlijst vindt u in de bijlage. De belangrijkste wijzigingen:
 
-- Pallettransport NL binnenland: €68 → €71 per pallet
+- Pallettransport NL binnenland: €68 naar €71 per pallet
 - Deelladingen NL-BE: +5,2%
 - Compleetladingen NL-BE: +3,8%
 
@@ -330,8 +343,8 @@ Beekman Logistics</pre>
       <div class="card-summary">Warehousing Plus verhoogt opslagtarieven per 1 juni met 7-9% vanwege energiekosten en CPI-indexatie.</div>
       <div class="card-facts">
         <span class="fact-chip">Per 1 juni 2026</span>
-        <span class="fact-chip">Pallet: €2,85 → €3,10/wk</span>
-        <span class="fact-chip">Handling: €3,50 → €3,75</span>
+        <span class="fact-chip">Pallet: €2,85 naar €3,10/wk</span>
+        <span class="fact-chip">Handling: €3,50 naar €3,75</span>
       </div>
       <div class="card-bottom">
         <div class="card-route">
@@ -340,7 +353,8 @@ Beekman Logistics</pre>
         </div>
         <div style="display:flex;align-items:center;gap:16px">
           <div class="card-action">💡 Impact berekenen, alternatieve warehouses vergelijken</div>
-          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+          <input type="checkbox" id="orig4" class="orig-toggle">
+          <label for="orig4" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
       <div class="card-orig">
@@ -351,9 +365,9 @@ Beekman Logistics</pre>
 Door gestegen energiekosten en de jaarlijkse CPI-indexatie passen wij onze opslagtarieven aan per 1 juni 2026.
 
 De nieuwe tarieven:
-- Palletopslag: €2,85 → €3,10 per palletplaats per week (+8,8%)
-- Bulkopslag: €4,20 → €4,55 per m² per week (+8,3%)
-- Handling in/uit: €3,50 → €3,75 per pallet (+7,1%)
+- Palletopslag: €2,85 naar €3,10 per palletplaats per week (+8,8%)
+- Bulkopslag: €4,20 naar €4,55 per m² per week (+8,3%)
+- Handling in/uit: €3,50 naar €3,75 per pallet (+7,1%)
 
 Deze tarieven gelden voor alle klanten zonder lopend contract met vaste prijsafspraak.
 
@@ -393,7 +407,8 @@ Warehousing Plus B.V.</pre>
         </div>
         <div style="display:flex;align-items:center;gap:16px">
           <div class="card-action">💡 Beoordelen of demo inplannen zinvol is voor vervanging huidig materieel</div>
-          <button class="expand-btn" onclick="toggleOrig(this)">Toon origineel ▾</button>
+          <input type="checkbox" id="orig5" class="orig-toggle">
+          <label for="orig5" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
       <div class="card-orig">
@@ -422,23 +437,5 @@ Jungheinrich Nederland</pre>
   </div>
 </div>
 
-<script>
-function filterTeam(team){
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.classList.remove('active');
-    if(team==='alle'&&t.textContent.includes('Alle')) t.classList.add('active');
-    else if(t.textContent.includes(team)) t.classList.add('active');
-  });
-  document.querySelectorAll('.email-card').forEach(card=>{
-    card.style.display=(team==='alle'||card.dataset.team===team)?'':'none';
-  });
-}
-
-function toggleOrig(btn){
-  const orig=btn.closest('.email-card').querySelector('.card-orig');
-  orig.classList.toggle('open');
-  btn.textContent=orig.classList.contains('open')?'Verberg origineel ▴':'Toon origineel ▾';
-}
-</script>
 </body>
 </html>
