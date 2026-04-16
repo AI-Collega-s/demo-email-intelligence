@@ -3,181 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Colleague Hub — Email Intelligence Agent</title>
+<title>Email Intelligence Agent</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f5f5f0;--white:#fff;--card:#fff;--border:#e8e5de;--border-light:#f0ede6;
-  --text:#1a1a1a;--text2:#555;--muted:#999;
-  --orange:#e67e22;--orange-light:#fef3e6;--orange-dark:#d35400;
-  --red:#e74c3c;--red-light:#fdecea;
-  --blue:#3498db;--blue-light:#eaf4fd;
-  --green:#27ae60;--green-light:#e8f8ef;
-  --purple:#8e44ad;--purple-light:#f5eef8;
-  --r:12px;--rs:8px;
-  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-  --shadow-lg:0 4px 12px rgba(0,0,0,.1);
+  --bg:#f4f3ef;--white:#fff;--border:#e4e1da;--border-light:#edeae3;
+  --text:#1c1c1c;--text2:#5a5a5a;--muted:#9a9a9a;
+  --orange:#d97706;--orange-bg:#fff8ee;
+  --red:#dc2626;--red-bg:#fff5f5;
+  --blue:#2563eb;--blue-bg:#eff6ff;
+  --green:#16a34a;--green-bg:#f0fdf4;
+  --ai:#6d28d9;--ai-bg:#faf5ff;--ai-border:rgba(109,40,217,.15);
+  --r:10px;--rs:7px;
+  --shadow:0 1px 3px rgba(0,0,0,.05);
+  --shadow-md:0 3px 10px rgba(0,0,0,.08);
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 
+/* HIDDEN RADIOS */
 .team-radio{display:none}
-.main{max-width:1200px;margin:0 auto;padding:20px 32px}
 
-/* STATS BAR */
-.stats-bar{display:flex;align-items:center;gap:6px;margin-bottom:20px;padding:12px 18px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
-.stat-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text2)}
-.stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.stat-dot.hoog{background:var(--red)}
-.stat-dot.medium{background:var(--orange)}
-.stat-dot.laag{background:var(--green)}
-.stat-sep{width:1px;height:14px;background:var(--border);margin:0 4px}
-.stat-total{font-size:12px;font-weight:700;color:var(--text)}
-.stat-time{margin-left:auto;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.live-dot{width:7px;height:7px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite;margin-right:4px;flex-shrink:0}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* LAYOUT */
+.main{max-width:860px;margin:0 auto;padding:24px 24px}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.topbar-left{font-size:13px;color:var(--text2)}
+.topbar-left strong{color:var(--text);font-weight:700}
+.topbar-live{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.live-dot{width:6px;height:6px;background:var(--orange);border-radius:50%;animation:pulse 2.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 
 /* TABS */
-.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.tab{display:inline-flex;align-items:center;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;border:1.5px solid var(--border);background:var(--white);color:var(--text2);user-select:none}
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;border:1px solid var(--border);background:var(--white);color:var(--text2);user-select:none}
 .tab:hover{border-color:var(--orange);color:var(--orange)}
-.tab .count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:10px;font-size:11px;margin-left:6px;padding:0 6px;background:var(--bg);color:var(--muted)}
-#t-alle:checked ~ .main .tab-alle,#t-ops:checked ~ .main .tab-ops,#t-klant:checked ~ .main .tab-klant,#t-fin:checked ~ .main .tab-fin,#t-wh:checked ~ .main .tab-wh{background:var(--orange);color:#fff;border-color:var(--orange)}
-#t-alle:checked ~ .main .tab-alle .count,#t-ops:checked ~ .main .tab-ops .count,#t-klant:checked ~ .main .tab-klant .count,#t-fin:checked ~ .main .tab-fin .count,#t-wh:checked ~ .main .tab-wh .count{background:rgba(255,255,255,.3);color:#fff}
-#t-ops:checked ~ .main .email-card:not([data-team="Operations"]){display:none}
-#t-klant:checked ~ .main .email-card:not([data-team="Klantenservice"]){display:none}
-#t-fin:checked ~ .main .email-card:not([data-team="Financiën"]){display:none}
-#t-wh:checked ~ .main .email-card:not([data-team="Warehouse"]){display:none}
+.tab .n{margin-left:5px;font-size:11px;color:var(--muted)}
+#t-alle:checked~.main .tab-alle,#t-ops:checked~.main .tab-ops,#t-klant:checked~.main .tab-klant,#t-fin:checked~.main .tab-fin,#t-wh:checked~.main .tab-wh{background:var(--text);color:#fff;border-color:var(--text)}
+#t-alle:checked~.main .tab-alle .n,#t-ops:checked~.main .tab-ops .n,#t-klant:checked~.main .tab-klant .n,#t-fin:checked~.main .tab-fin .n,#t-wh:checked~.main .tab-wh .n{color:rgba(255,255,255,.5)}
+#t-ops:checked~.main .email-card:not([data-team="Operations"]){display:none}
+#t-klant:checked~.main .email-card:not([data-team="Klantenservice"]){display:none}
+#t-fin:checked~.main .email-card:not([data-team="Financiën"]){display:none}
+#t-wh:checked~.main .email-card:not([data-team="Warehouse"]){display:none}
 
 /* CARDS */
-@keyframes card-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.feed{display:flex;flex-direction:column;gap:12px}
-.email-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);position:relative;animation:card-in .4s ease both}
-.email-card:nth-child(1){animation-delay:.05s}
-.email-card:nth-child(2){animation-delay:.12s}
-.email-card:nth-child(3){animation-delay:.19s}
-.email-card:nth-child(4){animation-delay:.26s}
-.email-card:nth-child(5){animation-delay:.33s}
-.email-card:hover{box-shadow:var(--shadow-lg);border-color:#d0cdc6;transition:box-shadow .2s,border-color .2s}
-.email-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r)}
+@keyframes card-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.feed{display:flex;flex-direction:column;gap:10px}
+.email-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);animation:card-in .35s ease both;position:relative;overflow:hidden}
+.email-card:nth-child(1){animation-delay:.04s}
+.email-card:nth-child(2){animation-delay:.10s}
+.email-card:nth-child(3){animation-delay:.16s}
+.email-card:nth-child(4){animation-delay:.22s}
+.email-card:nth-child(5){animation-delay:.28s}
+.email-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
 .email-card.cat-vertraging::before{background:var(--red)}
 .email-card.cat-prijswijziging::before{background:var(--orange)}
 .email-card.cat-productupdate::before{background:var(--blue)}
 
-/* UNREAD DOT */
-.unread-dot{position:absolute;top:18px;right:18px;width:9px;height:9px;background:var(--orange);border-radius:50%;box-shadow:0 0 0 2px var(--orange-light);transition:opacity .3s}
-.email-card.handled .unread-dot{opacity:0}
-
-/* HANDLED & PROCESSING */
-@keyframes card-handled{0%{transform:scale(1)}50%{transform:scale(1.004)}100%{transform:scale(1)}}
-@keyframes border-pulse{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 0 0 3px rgba(230,126,34,.2),var(--shadow-lg)}}
-.email-card.handled{border-color:var(--green) !important;animation:card-handled .4s ease}
-.email-card.handled::before{background:var(--green) !important}
-.email-card.handled .action-btn{background:var(--green)}
-.email-card.processing{animation:border-pulse 1.1s ease-in-out infinite;border-color:var(--orange) !important}
-
-/* CONTENT */
-.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:12px;padding-right:22px}
-.card-left{flex:1;min-width:0}
-.card-from{font-size:14px;font-weight:700;margin-bottom:2px}
-.card-company{font-size:12px;color:var(--muted)}
-.card-badges{display:flex;gap:6px;flex-shrink:0;align-items:center;flex-wrap:wrap}
-.badge{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:600}
-.badge.vertraging{background:var(--red-light);color:var(--red)}
-.badge.prijswijziging{background:var(--orange-light);color:var(--orange-dark)}
-.badge.productupdate{background:var(--blue-light);color:var(--blue)}
-.badge-urg{padding:4px 10px;border-radius:14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
-.badge-urg.hoog{background:var(--red-light);color:var(--red)}
-.badge-urg.medium{background:var(--orange-light);color:var(--orange)}
-.badge-urg.laag{background:var(--green-light);color:var(--green)}
+/* CARD BODY */
+.card-body{padding:16px 20px 16px 20px}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+.card-sender{font-size:13px;font-weight:700;color:var(--text)}
+.card-company{font-size:11px;color:var(--muted);margin-top:1px}
+.card-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.tag{padding:3px 9px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.02em}
+.tag.vertraging{background:var(--red-bg);color:var(--red)}
+.tag.prijswijziging{background:var(--orange-bg);color:var(--orange)}
+.tag.productupdate{background:var(--blue-bg);color:var(--blue)}
+.tag.hoog{background:var(--red-bg);color:var(--red)}
+.tag.medium{background:var(--orange-bg);color:var(--orange)}
+.tag.laag{background:var(--green-bg);color:var(--green)}
 .card-date{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.card-meta-row{display:flex;align-items:center;gap:16px;margin-bottom:10px}
-.card-subject{font-size:14px;font-weight:600;margin-bottom:8px;color:var(--text)}
-.card-summary{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px}
-.card-facts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.fact-chip{padding:4px 12px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.card-subject{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.card-summary{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
+.card-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{padding:3px 10px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace}
 
-/* CARD BOTTOM */
-.card-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border-light);gap:12px}
-.card-route{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.route-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
-.route-team{display:flex;align-items:center;gap:5px;padding:5px 14px;background:var(--orange-light);border-radius:8px;font-size:12px;font-weight:700;color:var(--orange-dark)}
-.card-action{font-size:12px;color:var(--green);font-weight:500;line-height:1.4}
-.card-btns{display:flex;align-items:center;gap:8px;flex-shrink:0}
-
-/* ACTION BUTTON (oranje, primair) */
-.action-btn{padding:8px 16px;background:var(--orange);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s,transform .1s,box-shadow .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;min-width:142px;justify-content:center}
-.action-btn:hover:not(:disabled){background:var(--orange-dark);transform:translateY(-1px);box-shadow:0 4px 10px rgba(230,126,34,.3)}
-.action-btn:active:not(:disabled){transform:translateY(0)}
-.action-btn:disabled{cursor:default}
-
-/* DRAFT BUTTON (paars, secundair) */
-.draft-btn{padding:8px 14px;background:var(--purple-light);color:var(--purple);border:1.5px solid rgba(142,68,173,.25);border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
-.draft-btn:hover{background:rgba(142,68,173,.15);border-color:var(--purple);transform:translateY(-1px)}
-.draft-btn.open{background:var(--purple);color:#fff;border-color:var(--purple)}
-
-/* EXPAND ORIGINAL BUTTON */
+/* CARD FOOTER */
+.card-foot{display:flex;align-items:center;justify-content:space-between;padding-top:11px;border-top:1px solid var(--border-light);gap:10px}
+.route-info{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.route-name{font-weight:700;color:var(--text2)}
+.foot-right{display:flex;align-items:center;gap:10px}
+.ai-btn{padding:7px 14px;background:var(--ai-bg);color:var(--ai);border:1px solid var(--ai-border);border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.ai-btn:hover:not(:disabled){background:var(--ai);color:#fff;border-color:var(--ai)}
+.ai-btn:disabled{opacity:.6;cursor:default}
 .orig-toggle{display:none}
-.card-orig{max-height:0;overflow:hidden;transition:max-height .35s ease}
-.email-card:has(.orig-toggle:checked) .card-orig{max-height:600px}
-.expand-btn{font-size:11px;color:var(--orange);font-weight:600;cursor:pointer;font-family:inherit;padding:0;user-select:none;white-space:nowrap}
-.expand-btn:hover{color:var(--orange-dark)}
-.lbl-close{display:none}
+.email-card:has(.orig-toggle:checked) .card-orig{max-height:500px}
 .email-card:has(.orig-toggle:checked) .lbl-open{display:none}
 .email-card:has(.orig-toggle:checked) .lbl-close{display:inline}
+.expand-lbl{font-size:11px;color:var(--muted);cursor:pointer;user-select:none}
+.expand-lbl:hover{color:var(--text2)}
+.lbl-close{display:none}
 
-/* SPINNER */
-.btn-spin{width:11px;height:11px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0}
+/* AI SECTION */
+.ai-section{max-height:0;overflow:hidden;transition:max-height .4s ease,opacity .3s;opacity:0;background:var(--ai-bg);border-top:1px solid var(--ai-border)}
+.ai-section.open{max-height:800px;opacity:1}
+
+/* THINKING BLOCK */
+.think-block{padding:16px 20px}
+.think-head{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ai);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.think-spinner{width:10px;height:10px;border:2px solid rgba(109,40,217,.2);border-top-color:var(--ai);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
+.think-done-icon{display:none}
+.think-head.done .think-spinner{display:none}
+.think-head.done .think-done-icon{display:inline}
+.think-head.done{color:var(--green)}
+.think-rows{display:flex;flex-direction:column;gap:7px}
+.think-row{display:flex;align-items:baseline;gap:10px;opacity:0;transform:translateX(-8px);transition:opacity .35s,transform .35s}
+.think-row.visible{opacity:1;transform:translateX(0)}
+.tk{font-size:11px;font-weight:600;color:var(--ai);min-width:120px;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.tv{font-size:12px;color:var(--text2);line-height:1.5}
+.tv strong{color:var(--text);font-weight:600}
 
-/* ACTION CONFIRM */
-.action-confirm{font-size:11px;color:var(--green);font-weight:500;margin-top:10px;opacity:0;max-height:0;overflow:hidden;transition:opacity .5s .1s,max-height .4s;display:flex;align-items:center;gap:6px}
-.email-card.handled .action-confirm{opacity:1;max-height:30px}
+/* DRAFT BLOCK */
+.draft-block{padding:0 20px 16px;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s}
+.draft-block.visible{opacity:1;transform:translateY(0)}
+.draft-divider{height:1px;background:var(--ai-border);margin-bottom:14px}
+.draft-tabs{display:flex;gap:6px;margin-bottom:12px}
+.dtab{padding:5px 14px;border-radius:16px;font-size:11px;font-weight:600;border:1px solid var(--ai-border);background:transparent;color:var(--ai);cursor:pointer;transition:all .15s;font-family:inherit}
+.dtab:hover{background:rgba(109,40,217,.08)}
+.dtab.active{background:var(--ai);color:#fff;border-color:var(--ai)}
+.draft-pane{display:none}
+.draft-pane.active{display:block}
+.draft-to-line{font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.draft-to-line span{color:var(--text2);font-weight:500}
+.draft-area{width:100%;min-height:120px;border:1px solid var(--ai-border);border-radius:var(--rs);padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:var(--text);background:var(--white);resize:vertical;display:block;transition:border-color .2s,box-shadow .2s}
+.draft-area:focus{outline:none;border-color:var(--ai);box-shadow:0 0 0 3px rgba(109,40,217,.08)}
+.draft-send-row{display:flex;align-items:center;gap:12px;margin-top:10px}
+.send-btn{padding:7px 18px;background:var(--green);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:6px;min-width:110px;justify-content:center}
+.send-btn:hover:not(:disabled){background:#15803d;transform:translateY(-1px)}
+.send-btn:disabled{opacity:.8;cursor:default;transform:none}
+.sent-msg{font-size:11px;color:var(--green);font-weight:500}
+.send-spin{width:10px;height:10px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite}
 
-/* DRAFT SECTION */
-.draft-section{max-height:0;overflow:hidden;transition:max-height .4s ease,opacity .3s;opacity:0}
-.draft-section.open{max-height:500px;opacity:1}
-.draft-inner{margin-top:14px;border:1.5px solid rgba(142,68,173,.2);border-radius:var(--r);overflow:hidden;background:var(--purple-light)}
-.draft-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(142,68,173,.08);border-bottom:1px solid rgba(142,68,173,.15)}
-.draft-head-left{display:flex;align-items:center;gap:8px}
-.draft-label{font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em}
-.draft-to{font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace}
-.draft-generating{font-size:11px;color:var(--purple);font-weight:600;display:none;align-items:center;gap:6px}
-.draft-generating.visible{display:flex}
-.gen-spin{width:10px;height:10px;border:2px solid rgba(142,68,173,.3);border-top-color:var(--purple);border-radius:50%;animation:spin .65s linear infinite}
-.draft-body{padding:14px 16px}
-.draft-area{width:100%;min-height:130px;border:1.5px solid rgba(142,68,173,.2);border-radius:var(--rs);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:var(--text);background:var(--white);resize:vertical;transition:border-color .2s,box-shadow .2s;display:block}
-.draft-area:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(142,68,173,.1)}
-.draft-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid rgba(142,68,173,.15);gap:12px}
-.send-btn{padding:8px 20px;background:var(--green);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s,transform .1s,box-shadow .2s;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;min-width:120px;justify-content:center}
-.send-btn:hover:not(:disabled){background:#219a52;transform:translateY(-1px);box-shadow:0 4px 10px rgba(39,174,96,.3)}
-.send-btn:active:not(:disabled){transform:translateY(0)}
-.send-btn:disabled{cursor:default;opacity:.8}
-.send-confirm{font-size:11px;color:var(--green);font-weight:500}
-
-/* ORIG CONTENT */
-.orig-content{padding:16px 20px;margin-top:14px;background:var(--bg);border-radius:var(--rs);border:1px solid var(--border)}
-.orig-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.orig-content pre{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:var(--text2);white-space:pre-wrap}
+/* ORIG */
+.card-orig{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.orig-inner{padding:14px 20px;background:var(--bg);border-top:1px solid var(--border-light)}
+.orig-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.orig-inner pre{font-family:'DM Sans',sans-serif;font-size:11px;line-height:1.75;color:var(--text2);white-space:pre-wrap}
 
 /* RESPONSIVE */
-@media(max-width:768px){
+@media(max-width:680px){
   .main{padding:16px}
-  .stats-bar{flex-wrap:wrap;gap:8px;padding:10px 14px}
-  .stat-time{margin-left:0;width:100%}
-  .tabs{gap:6px;margin-bottom:14px}
-  .tab{padding:6px 12px;font-size:12px}
-  .email-card{padding:14px 16px}
-  .card-top{flex-direction:column;gap:8px;padding-right:26px}
-  .card-badges{flex-wrap:wrap}
-  .card-subject{font-size:13px}
-  .card-summary{font-size:12px;margin-bottom:10px}
-  .card-facts{gap:6px;margin-bottom:10px}
-  .fact-chip{font-size:10px;padding:3px 8px}
-  .card-bottom{flex-direction:column;align-items:flex-start;gap:10px}
-  .card-btns{flex-wrap:wrap}
-  .action-btn{min-width:0}
-  .draft-area{min-height:110px}
+  .card-head{flex-direction:column;gap:6px}
+  .card-meta{justify-content:flex-start}
+  .card-foot{flex-direction:column;align-items:flex-start;gap:8px}
+  .foot-right{width:100%;justify-content:flex-end}
+  .tk{min-width:90px}
+  .draft-tabs{flex-wrap:wrap}
 }
 </style>
 </head>
@@ -191,94 +165,110 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 <div class="main">
 
-  <div class="stats-bar">
-    <span class="live-dot"></span>
-    <span class="stat-total">5 nieuwe mails</span>
-    <div class="stat-sep"></div>
-    <div class="stat-item"><span class="stat-dot hoog"></span>2 hoog</div>
-    <div class="stat-sep"></div>
-    <div class="stat-item"><span class="stat-dot medium"></span>1 medium</div>
-    <div class="stat-sep"></div>
-    <div class="stat-item"><span class="stat-dot laag"></span>1 laag</div>
-    <div class="stat-sep"></div>
-    <div class="stat-item">2 vertragingen · 2 prijswijzigingen · 1 product update</div>
-    <span class="stat-time">13 apr 2026 · gegenereerd om 09:04</span>
+  <div class="topbar">
+    <div class="topbar-left"><strong>5 nieuwe mails</strong> &nbsp;·&nbsp; 2 vertragingen · 2 prijswijzigingen · 1 product update &nbsp;·&nbsp; 13 april 2026</div>
+    <div class="topbar-live"><span class="live-dot"></span>Live monitoring actief</div>
   </div>
 
   <div class="tabs">
-    <label for="t-alle" class="tab tab-alle">Alle mails<span class="count">5</span></label>
-    <label for="t-ops" class="tab tab-ops">⚙️ Operations<span class="count">1</span></label>
-    <label for="t-klant" class="tab tab-klant">📞 Klantenservice<span class="count">1</span></label>
-    <label for="t-fin" class="tab tab-fin">💰 Financiën<span class="count">2</span></label>
-    <label for="t-wh" class="tab tab-wh">🏭 Warehouse<span class="count">1</span></label>
+    <label for="t-alle" class="tab tab-alle">Alle mails<span class="n">5</span></label>
+    <label for="t-ops" class="tab tab-ops">Operations<span class="n">1</span></label>
+    <label for="t-klant" class="tab tab-klant">Klantenservice<span class="n">1</span></label>
+    <label for="t-fin" class="tab tab-fin">Financiën<span class="n">2</span></label>
+    <label for="t-wh" class="tab tab-wh">Warehouse<span class="n">1</span></label>
   </div>
 
   <div class="feed">
 
     <!-- KAART 1 -->
     <div class="email-card cat-vertraging" data-team="Klantenservice">
-      <span class="unread-dot"></span>
-      <div class="card-top">
-        <div class="card-left">
-          <div class="card-meta-row">
-            <div><div class="card-from">Marco Bakker</div><div class="card-company">De Vries Transport</div></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div>
+            <div class="card-sender">Marco Bakker</div>
+            <div class="card-company">De Vries Transport</div>
           </div>
-          <div class="card-subject">Levering order #8842 wordt ca. 3 uur later</div>
-        </div>
-        <div class="card-badges">
-          <span class="badge vertraging">Vertraging</span>
-          <span class="badge-urg hoog">Hoog</span>
-          <span class="card-date">13 apr · 07:15</span>
-        </div>
-      </div>
-      <div class="card-summary">Levering order #8842 aan Blokker DC Geldermalsen wordt circa 3 uur later door file op de A2 bij Eindhoven.</div>
-      <div class="card-facts">
-        <span class="fact-chip">Order #8842 · 14 pallets</span>
-        <span class="fact-chip">ETA 13:00-14:00 (was 10:00)</span>
-        <span class="fact-chip">A2 afgesloten · Eindhoven</span>
-      </div>
-      <div class="card-bottom">
-        <div class="card-route">
-          <span class="route-label">Gerouteerd naar</span>
-          <span class="route-team">📞 Klantenservice</span>
-        </div>
-        <div class="card-btns">
-          <div class="card-action">💡 Blokker DC direct informeren</div>
-          <button class="action-btn" data-type="inform" data-confirm="Blokker DC geïnformeerd over vertraagde levering" onclick="handleEmail(this)">Klant informeren →</button>
-          <button class="draft-btn" onclick="toggleDraft(this, 'ds1')">✨ AI-concept</button>
-          <input type="checkbox" id="orig1" class="orig-toggle">
-          <label for="orig1" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
-        </div>
-      </div>
-      <div class="action-confirm"></div>
-      <div class="draft-section" id="ds1">
-        <div class="draft-inner">
-          <div class="draft-head">
-            <div class="draft-head-left">
-              <span class="draft-label">✨ AI-concept antwoord</span>
-              <span class="draft-to">Aan: m.bakker@devrietransport.nl</span>
-            </div>
-            <span class="draft-generating"><span class="gen-spin"></span>Genereren...</span>
+          <div class="card-meta">
+            <span class="tag vertraging">Vertraging</span>
+            <span class="tag hoog">Hoog</span>
+            <span class="card-date">13 apr · 07:15</span>
           </div>
-          <div class="draft-body">
+        </div>
+        <div class="card-subject">Levering order #8842 wordt ca. 3 uur later</div>
+        <div class="card-summary">Levering order #8842 aan Blokker DC Geldermalsen wordt circa 3 uur later door file op de A2 bij Eindhoven.</div>
+        <div class="card-chips">
+          <span class="chip">Order #8842 · 14 pallets</span>
+          <span class="chip">ETA 13:00-14:00 (was 10:00)</span>
+          <span class="chip">A2 afgesloten · Eindhoven</span>
+        </div>
+        <div class="card-foot">
+          <div class="route-info">Gerouteerd naar <span class="route-name">Klantenservice</span></div>
+          <div class="foot-right">
+            <button class="ai-btn" onclick="startAI(this, 'ai1')">✨ AI-concept genereren</button>
+            <input type="checkbox" id="orig1" class="orig-toggle">
+            <label for="orig1" class="expand-lbl"><span class="lbl-open">Origineel ▾</span><span class="lbl-close">Origineel ▴</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-section" id="ai1">
+        <div class="think-block">
+          <div class="think-head" id="ai1-head">
+            <span class="think-spinner"></span>
+            <span class="think-done-icon">✓</span>
+            <span class="think-label">Analyseren...</span>
+          </div>
+          <div class="think-rows">
+            <div class="think-row"><span class="tk">Afzender</span><span class="tv"><strong>Marco Bakker</strong> · De Vries Transport (carrier)</span></div>
+            <div class="think-row"><span class="tk">Type</span><span class="tv">Vertraging melding · urgentie <strong>hoog</strong></span></div>
+            <div class="think-row"><span class="tk">Betrokken klant</span><span class="tv"><strong>Blokker DC Geldermalsen</strong> — eindklant order #8842, nog niet geïnformeerd</span></div>
+            <div class="think-row"><span class="tk">Beslissing</span><span class="tv"><strong>2 berichten:</strong> reply naar afzender + proactief klant informeren</span></div>
+          </div>
+        </div>
+        <div class="draft-block" id="ai1-drafts">
+          <div class="draft-divider"></div>
+          <div class="draft-tabs">
+            <button class="dtab active" onclick="switchDraft(this,'ai1',0)">Reply · Marco Bakker</button>
+            <button class="dtab" onclick="switchDraft(this,'ai1',1)">Bericht aan · Blokker DC</button>
+          </div>
+          <div class="draft-pane active">
+            <div class="draft-to-line">Aan: <span>m.bakker@devrietransport.nl</span></div>
             <textarea class="draft-area">Beste Marco,
 
-Bedankt voor de snelle melding. We hebben Blokker DC Geldermalsen direct op de hoogte gesteld van de vertraging bij order #8842. Het nieuwe tijdslot van 13:00-14:00 is doorgegeven aan de ontvanger.
+Bedankt voor de snelle melding over de vertraging bij order #8842. We hebben de situatie in behandeling genomen en Blokker DC Geldermalsen op de hoogte gesteld van het nieuwe tijdslot.
 
-Kun je ons een update sturen zodra de A2 weer vrijgegeven is, zodat we een preciezere ETA kunnen doorgeven?
+Kun je ons een update sturen zodra de A2 weer vrijgegeven is, zodat we een preciezere ETA kunnen bevestigen?
 
 Met vriendelijke groet,
 Klantenservice</textarea>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Marco Bakker')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
-          <div class="draft-footer">
-            <span class="send-confirm"></span>
-            <button class="send-btn" onclick="sendDraft(this, 'Marco Bakker')">Verzenden →</button>
+          <div class="draft-pane">
+            <div class="draft-to-line">Aan: <span>planning@blokkerdc.nl</span></div>
+            <textarea class="draft-area">Beste,
+
+Hierbij informeren wij u dat de levering van order #8842 (14 pallets) vertraging oploopt door een ongeluk op de A2 bij Eindhoven.
+
+Nieuw verwacht tijdslot: 13:00 - 14:00 (oorspronkelijk 10:00 - 11:00).
+
+Zodra wij een preciezere aankomsttijd hebben, informeren wij u direct. Onze excuses voor het ongemak.
+
+Met vriendelijke groet,
+Klantenservice</textarea>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Blokker DC')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="card-orig">
-        <div class="orig-content">
-          <div class="orig-label">✉️ Origineel bericht</div>
+        <div class="orig-inner">
+          <div class="orig-label">Origineel bericht</div>
           <pre>Goedemorgen,
 
 Onze chauffeur staat vast op de A2 ter hoogte van Eindhoven door een ongeluk. De weg is in beide richtingen afgesloten.
@@ -290,354 +280,400 @@ Verwachte aankomst nu: rond 13:00 - 14:00
 
 Zodra de weg weer open is, sturen wij een update met een preciezere ETA.
 
-Excuses voor het ongemak.
-
 Met vriendelijke groet,
-Marco Bakker
-Dispatcher
-De Vries Transport</pre>
+Marco Bakker · De Vries Transport</pre>
         </div>
       </div>
     </div>
 
     <!-- KAART 2 -->
     <div class="email-card cat-vertraging" data-team="Operations">
-      <span class="unread-dot"></span>
-      <div class="card-top">
-        <div class="card-left">
-          <div class="card-meta-row">
-            <div><div class="card-from">Jan de Vries</div><div class="card-company">Van Transport B.V.</div></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div>
+            <div class="card-sender">Jan de Vries</div>
+            <div class="card-company">Van Transport B.V.</div>
           </div>
-          <div class="card-subject">Vertraging container MSCU-449821 Rotterdam</div>
-        </div>
-        <div class="card-badges">
-          <span class="badge vertraging">Vertraging</span>
-          <span class="badge-urg medium">Medium</span>
-          <span class="card-date">13 apr · 08:41</span>
-        </div>
-      </div>
-      <div class="card-summary">Container MSCU-449821 komt één dag later aan in Rotterdam (16 i.p.v. 15 april) door congestie bij terminal Europoort.</div>
-      <div class="card-facts">
-        <span class="fact-chip">ETA 16 apr (+1 dag)</span>
-        <span class="fact-chip">BK-2026-08834 · 1x 40ft HC</span>
-        <span class="fact-chip">Terminal Europoort congestie</span>
-      </div>
-      <div class="card-bottom">
-        <div class="card-route">
-          <span class="route-label">Gerouteerd naar</span>
-          <span class="route-team">⚙️ Operations</span>
-        </div>
-        <div class="card-btns">
-          <div class="card-action">💡 Ontvanger informeren, warehouse-slot checken</div>
-          <button class="action-btn" data-type="forward" data-confirm="Doorgezet naar Operations · warehouse-slot 16 april geblokkeerd" onclick="handleEmail(this)">Doorsturen →</button>
-          <button class="draft-btn" onclick="toggleDraft(this, 'ds2')">✨ AI-concept</button>
-          <input type="checkbox" id="orig2" class="orig-toggle">
-          <label for="orig2" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
-        </div>
-      </div>
-      <div class="action-confirm"></div>
-      <div class="draft-section" id="ds2">
-        <div class="draft-inner">
-          <div class="draft-head">
-            <div class="draft-head-left">
-              <span class="draft-label">✨ AI-concept antwoord</span>
-              <span class="draft-to">Aan: j.devries@vantransport.nl</span>
-            </div>
-            <span class="draft-generating"><span class="gen-spin"></span>Genereren...</span>
+          <div class="card-meta">
+            <span class="tag vertraging">Vertraging</span>
+            <span class="tag medium">Medium</span>
+            <span class="card-date">13 apr · 08:41</span>
           </div>
-          <div class="draft-body">
+        </div>
+        <div class="card-subject">Vertraging container MSCU-449821 Rotterdam</div>
+        <div class="card-summary">Container MSCU-449821 komt één dag later aan in Rotterdam (16 i.p.v. 15 april) door congestie bij terminal Europoort.</div>
+        <div class="card-chips">
+          <span class="chip">ETA 16 apr (+1 dag)</span>
+          <span class="chip">BK-2026-08834 · 1x 40ft HC</span>
+          <span class="chip">Terminal Europoort congestie</span>
+        </div>
+        <div class="card-foot">
+          <div class="route-info">Gerouteerd naar <span class="route-name">Operations</span></div>
+          <div class="foot-right">
+            <button class="ai-btn" onclick="startAI(this, 'ai2')">✨ AI-concept genereren</button>
+            <input type="checkbox" id="orig2" class="orig-toggle">
+            <label for="orig2" class="expand-lbl"><span class="lbl-open">Origineel ▾</span><span class="lbl-close">Origineel ▴</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-section" id="ai2">
+        <div class="think-block">
+          <div class="think-head" id="ai2-head">
+            <span class="think-spinner"></span>
+            <span class="think-done-icon">✓</span>
+            <span class="think-label">Analyseren...</span>
+          </div>
+          <div class="think-rows">
+            <div class="think-row"><span class="tk">Afzender</span><span class="tv"><strong>Jan de Vries</strong> · Van Transport B.V. (carrier)</span></div>
+            <div class="think-row"><span class="tk">Type</span><span class="tv">Container vertraging · urgentie <strong>medium</strong></span></div>
+            <div class="think-row"><span class="tk">Intern team</span><span class="tv"><strong>Operations</strong> — ETA aanpassen, warehouse-slot 16 april herzien</span></div>
+            <div class="think-row"><span class="tk">Beslissing</span><span class="tv"><strong>2 berichten:</strong> reply bevestigen naar afzender + intern doorsturen naar Operations</span></div>
+          </div>
+        </div>
+        <div class="draft-block" id="ai2-drafts">
+          <div class="draft-divider"></div>
+          <div class="draft-tabs">
+            <button class="dtab active" onclick="switchDraft(this,'ai2',0)">Reply · Jan de Vries</button>
+            <button class="dtab" onclick="switchDraft(this,'ai2',1)">Intern · Operations team</button>
+          </div>
+          <div class="draft-pane active">
+            <div class="draft-to-line">Aan: <span>j.devries@vantransport.nl</span></div>
             <textarea class="draft-area">Beste Jan,
 
-Bedankt voor de tijdige melding over de vertraging van container MSCU-449821. We hebben de nieuwe ETA van 16 april verwerkt en het warehouse-slot dienovereenkomstig aangepast.
+Bedankt voor de tijdige melding over de vertraging van container MSCU-449821. We hebben de nieuwe ETA van 16 april intern verwerkt en het warehouse-slot dienovereenkomstig aangepast.
 
-De ontvanger is op de hoogte gesteld. Mochten er verdere wijzigingen zijn in de aankomsttijd, vernemen we dat graag zo spoedig mogelijk.
+Mochten er verdere wijzigingen zijn, dan horen we dat graag zo snel mogelijk.
 
 Met vriendelijke groet,
 Operations</textarea>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Jan de Vries')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
-          <div class="draft-footer">
-            <span class="send-confirm"></span>
-            <button class="send-btn" onclick="sendDraft(this, 'Jan de Vries')">Verzenden →</button>
+          <div class="draft-pane">
+            <div class="draft-to-line">Aan: <span>operations@intern</span></div>
+            <textarea class="draft-area">Hallo,
+
+FYI: container MSCU-449821 van Van Transport B.V. komt 1 dag later binnen. Nieuwe ETA 16 april (was 15 april). Booking ref: BK-2026-08834, inhoud consumentenelektronica.
+
+Warehouse-slot aanpassen naar 16 april. Ontvanger nog niet geïnformeerd — graag oppakken.
+
+Klaas</textarea>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Operations team')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="card-orig">
-        <div class="orig-content">
-          <div class="orig-label">✉️ Origineel bericht</div>
+        <div class="orig-inner">
+          <div class="orig-label">Origineel bericht</div>
           <pre>Beste,
 
-Hierbij informeren wij u dat container MSCU-449821 met bestemming Rotterdam een vertraging oploopt van één werkdag.
+Container MSCU-449821 met bestemming Rotterdam loopt een vertraging op van één werkdag.
 
 Oorspronkelijke ETA: 15 april 2026
 Nieuwe ETA: 16 april 2026
 
-Reden: congestie terminal Europoort. Het schip ligt momenteel op de rede in afwachting van een ligplaats.
+Reden: congestie terminal Europoort. Het schip ligt op de rede in afwachting van een ligplaats.
 
-Booking reference: BK-2026-08834
-Inhoud: 1x 40ft HC, consumentenelektronica
-
-Wij houden u op de hoogte van verdere ontwikkelingen.
+Booking reference: BK-2026-08834 · 1x 40ft HC consumentenelektronica
 
 Met vriendelijke groet,
-Jan de Vries
-Van Transport B.V.</pre>
+Jan de Vries · Van Transport B.V.</pre>
         </div>
       </div>
     </div>
 
     <!-- KAART 3 -->
     <div class="email-card cat-prijswijziging" data-team="Financiën">
-      <span class="unread-dot"></span>
-      <div class="card-top">
-        <div class="card-left">
-          <div class="card-meta-row">
-            <div><div class="card-from">Sandra Willems</div><div class="card-company">Beekman Logistics</div></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div>
+            <div class="card-sender">Sandra Willems</div>
+            <div class="card-company">Beekman Logistics</div>
           </div>
-          <div class="card-subject">Aangepaste tarieven Benelux per 1 mei</div>
-        </div>
-        <div class="card-badges">
-          <span class="badge prijswijziging">Prijswijziging</span>
-          <span class="badge-urg hoog">Hoog</span>
-          <span class="card-date">12 apr · 14:20</span>
-        </div>
-      </div>
-      <div class="card-summary">Beekman Logistics verhoogt Benelux-tarieven gemiddeld 4,5% per 1 mei. Pallettarief NL gaat van €68 naar €71.</div>
-      <div class="card-facts">
-        <span class="fact-chip">Per 1 mei 2026</span>
-        <span class="fact-chip">Gemiddeld +4,5%</span>
-        <span class="fact-chip">Pallet NL: €68 naar €71</span>
-      </div>
-      <div class="card-bottom">
-        <div class="card-route">
-          <span class="route-label">Gerouteerd naar</span>
-          <span class="route-team">💰 Financiën</span>
-        </div>
-        <div class="card-btns">
-          <div class="card-action">💡 Tarievenlijst vergelijken, heronderhandeling</div>
-          <button class="action-btn" data-type="forward" data-confirm="Doorgezet naar Financiën · tarievenanalyse gestart" onclick="handleEmail(this)">Doorsturen →</button>
-          <button class="draft-btn" onclick="toggleDraft(this, 'ds3')">✨ AI-concept</button>
-          <input type="checkbox" id="orig3" class="orig-toggle">
-          <label for="orig3" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
-        </div>
-      </div>
-      <div class="action-confirm"></div>
-      <div class="draft-section" id="ds3">
-        <div class="draft-inner">
-          <div class="draft-head">
-            <div class="draft-head-left">
-              <span class="draft-label">✨ AI-concept antwoord</span>
-              <span class="draft-to">Aan: s.willems@beekmanlodistics.nl</span>
-            </div>
-            <span class="draft-generating"><span class="gen-spin"></span>Genereren...</span>
+          <div class="card-meta">
+            <span class="tag prijswijziging">Prijswijziging</span>
+            <span class="tag hoog">Hoog</span>
+            <span class="card-date">12 apr · 14:20</span>
           </div>
-          <div class="draft-body">
+        </div>
+        <div class="card-subject">Aangepaste tarieven Benelux per 1 mei</div>
+        <div class="card-summary">Beekman Logistics verhoogt Benelux-tarieven gemiddeld 4,5% per 1 mei. Pallettarief NL gaat van €68 naar €71.</div>
+        <div class="card-chips">
+          <span class="chip">Per 1 mei 2026</span>
+          <span class="chip">Gemiddeld +4,5%</span>
+          <span class="chip">Pallet NL: €68 naar €71</span>
+        </div>
+        <div class="card-foot">
+          <div class="route-info">Gerouteerd naar <span class="route-name">Financiën</span></div>
+          <div class="foot-right">
+            <button class="ai-btn" onclick="startAI(this, 'ai3')">✨ AI-concept genereren</button>
+            <input type="checkbox" id="orig3" class="orig-toggle">
+            <label for="orig3" class="expand-lbl"><span class="lbl-open">Origineel ▾</span><span class="lbl-close">Origineel ▴</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-section" id="ai3">
+        <div class="think-block">
+          <div class="think-head" id="ai3-head">
+            <span class="think-spinner"></span>
+            <span class="think-done-icon">✓</span>
+            <span class="think-label">Analyseren...</span>
+          </div>
+          <div class="think-rows">
+            <div class="think-row"><span class="tk">Afzender</span><span class="tv"><strong>Sandra Willems</strong> · Beekman Logistics (leverancier)</span></div>
+            <div class="think-row"><span class="tk">Type</span><span class="tv">Tariefaankondiging · impact op lopende contracten · urgentie <strong>hoog</strong></span></div>
+            <div class="think-row"><span class="tk">Intern team</span><span class="tv"><strong>Financiën</strong> — impact berekenen, contractcheck uitvoeren</span></div>
+            <div class="think-row"><span class="tk">Beslissing</span><span class="tv"><strong>2 berichten:</strong> reply met gesprekverzoek + intern bericht aan Financiën</span></div>
+          </div>
+        </div>
+        <div class="draft-block" id="ai3-drafts">
+          <div class="draft-divider"></div>
+          <div class="draft-tabs">
+            <button class="dtab active" onclick="switchDraft(this,'ai3',0)">Reply · Sandra Willems</button>
+            <button class="dtab" onclick="switchDraft(this,'ai3',1)">Intern · Financiën</button>
+          </div>
+          <div class="draft-pane active">
+            <div class="draft-to-line">Aan: <span>s.willems@beekmanlodistics.nl</span></div>
             <textarea class="draft-area">Beste Sandra,
 
-Bedankt voor de aankondiging van de tariefaanpassing per 1 mei. We hebben de nieuwe tarievenlijst ontvangen en zullen deze intern beoordelen.
+Bedankt voor de tijdige aankondiging van de tariefaanpassing per 1 mei. We hebben de nieuwe tarievenlijst ontvangen en zullen deze intern beoordelen.
 
-We begrijpen de achtergrond van de verhoging, maar willen graag op korte termijn een gesprek inplannen om de mogelijkheden voor onze bestaande samenwerking te bespreken.
-
-Kunnen we volgende week een moment afspreken?
+We willen graag een gesprek inplannen om de mogelijkheden voor onze samenwerking te bespreken. Heeft u volgende week beschikbaarheid?
 
 Met vriendelijke groet,
 Financiën</textarea>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Sandra Willems')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
-          <div class="draft-footer">
-            <span class="send-confirm"></span>
-            <button class="send-btn" onclick="sendDraft(this, 'Sandra Willems')">Verzenden →</button>
+          <div class="draft-pane">
+            <div class="draft-to-line">Aan: <span>financien@intern</span></div>
+            <textarea class="draft-area">Hallo,
+
+Beekman Logistics verhoogt per 1 mei de Benelux-tarieven met gemiddeld 4,5% (pallet NL: €68 > €71, deelladingen NL-BE: +5,2%).
+
+Graag impact berekenen op onze lopende volumes en contracten. Terugkoppeling voor einde week gewenst — dan kunnen we een gesprek met Beekman inplannen.
+
+Klaas</textarea>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Financiën team')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="card-orig">
-        <div class="orig-content">
-          <div class="orig-label">✉️ Origineel bericht</div>
+        <div class="orig-inner">
+          <div class="orig-label">Origineel bericht</div>
           <pre>Geachte relatie,
 
-Per 1 mei 2026 passen wij onze tarieven aan voor distributieverkeer binnen de Benelux. De aanpassing bedraagt gemiddeld 4,5% en is het gevolg van gestegen brandstof- en personeelskosten.
+Per 1 mei 2026 passen wij onze tarieven aan voor distributieverkeer binnen de Benelux. De aanpassing bedraagt gemiddeld 4,5%.
 
-De nieuwe tarievenlijst vindt u in de bijlage. De belangrijkste wijzigingen:
-
-- Pallettransport NL binnenland: €68 naar €71 per pallet
+- Pallettransport NL: €68 naar €71 per pallet
 - Deelladingen NL-BE: +5,2%
 - Compleetladingen NL-BE: +3,8%
 
 Bestaande contracten met vaste prijsafspraken blijven ongewijzigd tot de einddatum.
 
 Met vriendelijke groet,
-Sandra Willems
-Commercieel Manager
-Beekman Logistics</pre>
+Sandra Willems · Commercieel Manager · Beekman Logistics</pre>
         </div>
       </div>
     </div>
 
     <!-- KAART 4 -->
     <div class="email-card cat-prijswijziging" data-team="Financiën">
-      <span class="unread-dot"></span>
-      <div class="card-top">
-        <div class="card-left">
-          <div class="card-meta-row">
-            <div><div class="card-from">Annemiek Groen</div><div class="card-company">Warehousing Plus B.V.</div></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div>
+            <div class="card-sender">Annemiek Groen</div>
+            <div class="card-company">Warehousing Plus B.V.</div>
           </div>
-          <div class="card-subject">Aanpassing opslagtarieven per 1 juni 2026</div>
-        </div>
-        <div class="card-badges">
-          <span class="badge prijswijziging">Prijswijziging</span>
-          <span class="badge-urg hoog">Hoog</span>
-          <span class="card-date">10 apr · 16:33</span>
-        </div>
-      </div>
-      <div class="card-summary">Warehousing Plus verhoogt opslagtarieven per 1 juni met 7-9% vanwege energiekosten en CPI-indexatie.</div>
-      <div class="card-facts">
-        <span class="fact-chip">Per 1 juni 2026</span>
-        <span class="fact-chip">Pallet: €2,85 naar €3,10/wk</span>
-        <span class="fact-chip">Handling: €3,50 naar €3,75</span>
-      </div>
-      <div class="card-bottom">
-        <div class="card-route">
-          <span class="route-label">Gerouteerd naar</span>
-          <span class="route-team">💰 Financiën</span>
-        </div>
-        <div class="card-btns">
-          <div class="card-action">💡 Impact berekenen, alternatieven vergelijken</div>
-          <button class="action-btn" data-type="forward" data-confirm="Doorgezet naar Financiën · impactberekening gestart" onclick="handleEmail(this)">Doorsturen →</button>
-          <button class="draft-btn" onclick="toggleDraft(this, 'ds4')">✨ AI-concept</button>
-          <input type="checkbox" id="orig4" class="orig-toggle">
-          <label for="orig4" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
-        </div>
-      </div>
-      <div class="action-confirm"></div>
-      <div class="draft-section" id="ds4">
-        <div class="draft-inner">
-          <div class="draft-head">
-            <div class="draft-head-left">
-              <span class="draft-label">✨ AI-concept antwoord</span>
-              <span class="draft-to">Aan: a.groen@warehousingplus.nl</span>
-            </div>
-            <span class="draft-generating"><span class="gen-spin"></span>Genereren...</span>
+          <div class="card-meta">
+            <span class="tag prijswijziging">Prijswijziging</span>
+            <span class="tag hoog">Hoog</span>
+            <span class="card-date">10 apr · 16:33</span>
           </div>
-          <div class="draft-body">
+        </div>
+        <div class="card-subject">Aanpassing opslagtarieven per 1 juni 2026</div>
+        <div class="card-summary">Warehousing Plus verhoogt opslagtarieven per 1 juni met 7-9% vanwege energiekosten en CPI-indexatie.</div>
+        <div class="card-chips">
+          <span class="chip">Per 1 juni 2026</span>
+          <span class="chip">Pallet: €2,85 naar €3,10/wk</span>
+          <span class="chip">Handling: €3,50 naar €3,75</span>
+        </div>
+        <div class="card-foot">
+          <div class="route-info">Gerouteerd naar <span class="route-name">Financiën</span></div>
+          <div class="foot-right">
+            <button class="ai-btn" onclick="startAI(this, 'ai4')">✨ AI-concept genereren</button>
+            <input type="checkbox" id="orig4" class="orig-toggle">
+            <label for="orig4" class="expand-lbl"><span class="lbl-open">Origineel ▾</span><span class="lbl-close">Origineel ▴</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-section" id="ai4">
+        <div class="think-block">
+          <div class="think-head" id="ai4-head">
+            <span class="think-spinner"></span>
+            <span class="think-done-icon">✓</span>
+            <span class="think-label">Analyseren...</span>
+          </div>
+          <div class="think-rows">
+            <div class="think-row"><span class="tk">Afzender</span><span class="tv"><strong>Annemiek Groen</strong> · Warehousing Plus B.V. (opslagpartner)</span></div>
+            <div class="think-row"><span class="tk">Type</span><span class="tv">Tariefverhoging opslag · CPI-indexatie · urgentie <strong>hoog</strong></span></div>
+            <div class="think-row"><span class="tk">Intern team</span><span class="tv"><strong>Financiën</strong> — impactberekening, vergelijking alternatieve warehouses</span></div>
+            <div class="think-row"><span class="tk">Beslissing</span><span class="tv"><strong>2 berichten:</strong> reply ontvangst bevestigen + intern doorsturen Financiën</span></div>
+          </div>
+        </div>
+        <div class="draft-block" id="ai4-drafts">
+          <div class="draft-divider"></div>
+          <div class="draft-tabs">
+            <button class="dtab active" onclick="switchDraft(this,'ai4',0)">Reply · Annemiek Groen</button>
+            <button class="dtab" onclick="switchDraft(this,'ai4',1)">Intern · Financiën</button>
+          </div>
+          <div class="draft-pane active">
+            <div class="draft-to-line">Aan: <span>a.groen@warehousingplus.nl</span></div>
             <textarea class="draft-area">Beste Annemiek,
 
-Bedankt voor de aankondiging van de tariefaanpassing per 1 juni. We hebben de nieuwe tarieven ontvangen en zullen intern de financiele impact in kaart brengen.
+Bedankt voor de aankondiging van de tariefaanpassing per 1 juni. We hebben de nieuwe tarieven ontvangen en zullen intern de financiele impact beoordelen.
 
-Gezien de omvang van de wijzigingen willen we graag een overleg inplannen om te bespreken welke opties er zijn voor onze lopende opslagovereenkomst.
-
-We nemen volgende week contact met u op.
+Gezien de omvang van de wijzigingen willen we graag overleggen over de mogelijkheden voor onze lopende opslagovereenkomst. We nemen volgende week contact met u op.
 
 Met vriendelijke groet,
 Financiën</textarea>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Annemiek Groen')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
-          <div class="draft-footer">
-            <span class="send-confirm"></span>
-            <button class="send-btn" onclick="sendDraft(this, 'Annemiek Groen')">Verzenden →</button>
+          <div class="draft-pane">
+            <div class="draft-to-line">Aan: <span>financien@intern</span></div>
+            <textarea class="draft-area">Hallo,
+
+Warehousing Plus verhoogt opslagtarieven per 1 juni met 7-9% (palletopslag: €2,85 > €3,10/week, handling: €3,50 > €3,75). Geen uitzondering voor lopende overeenkomsten zonder vaste prijsafspraak.
+
+Graag impact berekenen en 2-3 alternatieve warehouses vergelijken als backup. Terugkoppeling voor einde volgende week.
+
+Klaas</textarea>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Financiën team')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="card-orig">
-        <div class="orig-content">
-          <div class="orig-label">✉️ Origineel bericht</div>
+        <div class="orig-inner">
+          <div class="orig-label">Origineel bericht</div>
           <pre>Geachte huurder,
 
 Door gestegen energiekosten en de jaarlijkse CPI-indexatie passen wij onze opslagtarieven aan per 1 juni 2026.
 
-De nieuwe tarieven:
 - Palletopslag: €2,85 naar €3,10 per palletplaats per week (+8,8%)
 - Bulkopslag: €4,20 naar €4,55 per m² per week (+8,3%)
 - Handling in/uit: €3,50 naar €3,75 per pallet (+7,1%)
 
-Deze tarieven gelden voor alle klanten zonder lopend contract met vaste prijsafspraak.
-
 Met vriendelijke groet,
-Annemiek Groen
-Directeur
-Warehousing Plus B.V.</pre>
+Annemiek Groen · Directeur · Warehousing Plus B.V.</pre>
         </div>
       </div>
     </div>
 
     <!-- KAART 5 -->
     <div class="email-card cat-productupdate" data-team="Warehouse">
-      <span class="unread-dot"></span>
-      <div class="card-top">
-        <div class="card-left">
-          <div class="card-meta-row">
-            <div><div class="card-from">Pieter Kolen</div><div class="card-company">Jungheinrich Nederland</div></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div>
+            <div class="card-sender">Pieter Kolen</div>
+            <div class="card-company">Jungheinrich Nederland</div>
           </div>
-          <div class="card-subject">Nieuw: ETV 216i reachtruck met verlengde batterijduur</div>
-        </div>
-        <div class="card-badges">
-          <span class="badge productupdate">Product Update</span>
-          <span class="badge-urg laag">Laag</span>
-          <span class="card-date">11 apr · 10:05</span>
-        </div>
-      </div>
-      <div class="card-summary">Jungheinrich introduceert de ETV 216i reachtruck met 30% langere batterijduur. Proefperiode van 2 weken beschikbaar.</div>
-      <div class="card-facts">
-        <span class="fact-chip">Batterij: 12 uur (+30%)</span>
-        <span class="fact-chip">Snelladen: 80% in 45 min</span>
-        <span class="fact-chip">2 weken proefperiode</span>
-      </div>
-      <div class="card-bottom">
-        <div class="card-route">
-          <span class="route-label">Gerouteerd naar</span>
-          <span class="route-team">🏭 Warehouse</span>
-        </div>
-        <div class="card-btns">
-          <div class="card-action">💡 Demo inplannen voor vervanging huidig materieel</div>
-          <button class="action-btn" data-type="plan" data-confirm="Demo ETV 216i ingepland · uitnodiging verstuurd" onclick="handleEmail(this)">Demo inplannen →</button>
-          <button class="draft-btn" onclick="toggleDraft(this, 'ds5')">✨ AI-concept</button>
-          <input type="checkbox" id="orig5" class="orig-toggle">
-          <label for="orig5" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
-        </div>
-      </div>
-      <div class="action-confirm"></div>
-      <div class="draft-section" id="ds5">
-        <div class="draft-inner">
-          <div class="draft-head">
-            <div class="draft-head-left">
-              <span class="draft-label">✨ AI-concept antwoord</span>
-              <span class="draft-to">Aan: p.kolen@jungheinrich.nl</span>
-            </div>
-            <span class="draft-generating"><span class="gen-spin"></span>Genereren...</span>
+          <div class="card-meta">
+            <span class="tag productupdate">Product update</span>
+            <span class="tag laag">Laag</span>
+            <span class="card-date">11 apr · 10:05</span>
           </div>
-          <div class="draft-body">
+        </div>
+        <div class="card-subject">Nieuw: ETV 216i reachtruck met verlengde batterijduur</div>
+        <div class="card-summary">Jungheinrich introduceert de ETV 216i reachtruck met 30% langere batterijduur. Proefperiode van 2 weken beschikbaar.</div>
+        <div class="card-chips">
+          <span class="chip">Batterij: 12 uur (+30%)</span>
+          <span class="chip">Snelladen: 80% in 45 min</span>
+          <span class="chip">2 weken proefperiode</span>
+        </div>
+        <div class="card-foot">
+          <div class="route-info">Gerouteerd naar <span class="route-name">Warehouse</span></div>
+          <div class="foot-right">
+            <button class="ai-btn" onclick="startAI(this, 'ai5')">✨ AI-concept genereren</button>
+            <input type="checkbox" id="orig5" class="orig-toggle">
+            <label for="orig5" class="expand-lbl"><span class="lbl-open">Origineel ▾</span><span class="lbl-close">Origineel ▴</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-section" id="ai5">
+        <div class="think-block">
+          <div class="think-head" id="ai5-head">
+            <span class="think-spinner"></span>
+            <span class="think-done-icon">✓</span>
+            <span class="think-label">Analyseren...</span>
+          </div>
+          <div class="think-rows">
+            <div class="think-row"><span class="tk">Afzender</span><span class="tv"><strong>Pieter Kolen</strong> · Jungheinrich Nederland (leverancier)</span></div>
+            <div class="think-row"><span class="tk">Type</span><span class="tv">Product update · geen urgentie · beoordeling gewenst door Warehouse</span></div>
+            <div class="think-row"><span class="tk">Intern team</span><span class="tv"><strong>Warehouse manager</strong> — demo beoordelen, koppelen aan vervangingsplanning</span></div>
+            <div class="think-row"><span class="tk">Beslissing</span><span class="tv"><strong>1 bericht:</strong> reply met interesse + verzoek om demo in te plannen</span></div>
+          </div>
+        </div>
+        <div class="draft-block" id="ai5-drafts">
+          <div class="draft-divider"></div>
+          <div class="draft-tabs">
+            <button class="dtab active" onclick="switchDraft(this,'ai5',0)">Reply · Pieter Kolen</button>
+          </div>
+          <div class="draft-pane active">
+            <div class="draft-to-line">Aan: <span>p.kolen@jungheinrich.nl</span></div>
             <textarea class="draft-area">Beste Pieter,
 
-Bedankt voor de informatie over de ETV 216i. De verbeterde batterijduur en het snelladen klinken veelbelovend, zeker gezien ons huidige materieel.
+Bedankt voor de informatie over de ETV 216i. De verbeterde batterijduur en het snelladen zijn interessant, zeker in het licht van onze vervangingsplanning voor het huidige materieel.
 
 We willen graag gebruikmaken van de aangeboden proefperiode van 2 weken. Heeft u beschikbaarheid in week 18 of 19? Dan kunnen we intern de planning afstemmen.
 
-We horen graag van u.
-
 Met vriendelijke groet,
 Warehouse</textarea>
-          </div>
-          <div class="draft-footer">
-            <span class="send-confirm"></span>
-            <button class="send-btn" onclick="sendDraft(this, 'Pieter Kolen')">Verzenden →</button>
+            <div class="draft-send-row">
+              <button class="send-btn" onclick="sendDraft(this,'Pieter Kolen')">Verzenden →</button>
+              <span class="sent-msg"></span>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="card-orig">
-        <div class="orig-content">
-          <div class="orig-label">✉️ Origineel bericht</div>
+        <div class="orig-inner">
+          <div class="orig-label">Origineel bericht</div>
           <pre>Beste,
 
-Graag informeren wij u over onze nieuwe reachtruck, de ETV 216i. Dit model is nu beschikbaar met een lithium-ion batterij die 30% langer meegaat dan de vorige generatie.
+Onze nieuwe reachtruck ETV 216i is nu beschikbaar met een lithium-ion batterij die 30% langer meegaat.
 
-Belangrijkste verbeteringen:
 - Batterijduur: tot 12 uur onafgebroken gebruik
 - Snellaadtijd: 80% in 45 minuten
 - Hefcapaciteit: 1.600 kg op 10,7 meter
-- Nieuw display met realtime energieverbruik
 
-Wij bieden een proefperiode van 2 weken aan zodat u het verschil in de praktijk kunt ervaren.
+Wij bieden een proefperiode van 2 weken aan.
 
 Met vriendelijke groet,
-Pieter Kolen
-Accountmanager
-Jungheinrich Nederland</pre>
+Pieter Kolen · Accountmanager · Jungheinrich Nederland</pre>
         </div>
       </div>
     </div>
@@ -646,71 +682,61 @@ Jungheinrich Nederland</pre>
 </div>
 
 <script>
-var stepSets = {
-  inform: ['Bericht opstellen...','Verzenden naar klant...','Ontvangst bevestigd...'],
-  forward: ['Doorsturen naar team...','Team notificeren...','Bevestiging ontvangen...'],
-  plan: ['Beschikbaarheid checken...','Agenda blokkeren...','Uitnodiging verzonden...']
-};
-
-function handleEmail(btn) {
-  var card = btn.closest('.email-card');
-  if (card.classList.contains('handled') || card.classList.contains('processing')) return;
-  var type = btn.dataset.type || 'forward';
-  var confirmText = btn.dataset.confirm || 'Verwerkt';
-  var steps = stepSets[type];
-  card.classList.add('processing');
+function startAI(btn, id) {
+  if (btn.disabled) return;
   btn.disabled = true;
-  steps.forEach(function(text, i) {
-    setTimeout(function() { btn.innerHTML = '<span class="btn-spin"></span>' + text; }, i * 950);
+  btn.innerHTML = '✨ Analyseren...';
+
+  var section = document.getElementById(id);
+  var head = document.getElementById(id + '-head');
+  var rows = section.querySelectorAll('.think-row');
+  var draftsEl = document.getElementById(id + '-drafts');
+
+  section.classList.add('open');
+
+  rows.forEach(function(row, i) {
+    setTimeout(function() { row.classList.add('visible'); }, 350 + i * 680);
   });
+
+  var doneAt = 350 + rows.length * 680 + 300;
+
   setTimeout(function() {
-    card.classList.remove('processing');
-    card.classList.add('handled');
-    btn.innerHTML = '\u2713 Behandeld';
-    var now = new Date();
-    var t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    card.querySelector('.action-confirm').textContent = '\u2713 ' + confirmText + ' \u00b7 ' + t;
-  }, steps.length * 950 + 400);
+    head.classList.add('done');
+    var count = section.querySelectorAll('.dtab').length;
+    head.querySelector('.think-label').textContent = '\u2713 Analyse klaar \u00b7 ' + count + ' bericht' + (count > 1 ? 'en' : '') + ' voorbereid';
+    btn.innerHTML = '\u2713 Concept klaar';
+    setTimeout(function() {
+      draftsEl.style.display = 'block';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          draftsEl.classList.add('visible');
+        });
+      });
+    }, 350);
+  }, doneAt);
 }
 
-function toggleDraft(btn, id) {
+function switchDraft(tab, id, idx) {
   var section = document.getElementById(id);
-  var isOpen = section.classList.contains('open');
-  if (isOpen) {
-    section.classList.remove('open');
-    btn.classList.remove('open');
-    return;
-  }
-  // Toon genereer-animatie
-  var genEl = section.querySelector('.draft-generating');
-  var area = section.querySelector('.draft-area');
-  var origText = area.value;
-  genEl.classList.add('visible');
-  area.style.opacity = '0';
-  section.classList.add('open');
-  btn.classList.add('open');
-  setTimeout(function() {
-    genEl.classList.remove('visible');
-    area.style.transition = 'opacity .4s';
-    area.style.opacity = '1';
-  }, 900);
+  section.querySelectorAll('.dtab').forEach(function(t) { t.classList.remove('active'); });
+  section.querySelectorAll('.draft-pane').forEach(function(p) { p.classList.remove('active'); });
+  tab.classList.add('active');
+  section.querySelectorAll('.draft-pane')[idx].classList.add('active');
 }
 
 function sendDraft(btn, name) {
   if (btn.disabled) return;
   btn.disabled = true;
-  var footer = btn.closest('.draft-footer');
-  var confirm = footer.querySelector('.send-confirm');
-  btn.innerHTML = '<span class="btn-spin"></span>Verzenden...';
+  btn.innerHTML = '<span class="send-spin"></span>Verzenden...';
   setTimeout(function() {
-    btn.innerHTML = '<span class="btn-spin"></span>Bevestiging...';
-  }, 1000);
+    btn.innerHTML = '<span class="send-spin"></span>Bevestiging...';
+  }, 1050);
   setTimeout(function() {
     btn.innerHTML = '\u2713 Verzonden';
     var now = new Date();
     var t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    confirm.textContent = '\u2713 Antwoord verzonden naar ' + name + ' \u00b7 ' + t;
-  }, 2100);
+    btn.closest('.draft-send-row').querySelector('.sent-msg').textContent = 'Verstuurd naar ' + name + ' \u00b7 ' + t;
+  }, 2200);
 }
 </script>
 </body>
