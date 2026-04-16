@@ -8,43 +8,44 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f5f5f0;
-  --white:#ffffff;
-  --card:#ffffff;
-  --border:#e8e5de;
-  --border-light:#f0ede6;
-  --text:#1a1a1a;
-  --text2:#555;
-  --muted:#999;
-  --orange:#e67e22;
-  --orange-light:#fef3e6;
-  --orange-dark:#d35400;
-  --red:#e74c3c;
-  --red-light:#fdecea;
-  --blue:#3498db;
-  --blue-light:#eaf4fd;
-  --green:#27ae60;
-  --green-light:#e8f8ef;
-  --r:12px;
-  --rs:8px;
-  --shadow:0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-  --shadow-lg:0 4px 12px rgba(0,0,0,.08);
+  --bg:#f5f5f0;--white:#fff;--card:#fff;--border:#e8e5de;--border-light:#f0ede6;
+  --text:#1a1a1a;--text2:#555;--muted:#999;
+  --orange:#e67e22;--orange-light:#fef3e6;--orange-dark:#d35400;
+  --red:#e74c3c;--red-light:#fdecea;
+  --blue:#3498db;--blue-light:#eaf4fd;
+  --green:#27ae60;--green-light:#e8f8ef;
+  --r:12px;--rs:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg:0 4px 12px rgba(0,0,0,.1);
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* HIDDEN RADIO BUTTONS */
 .team-radio{display:none}
 
-/* MAIN LAYOUT */
-.main{max-width:1200px;margin:0 auto;padding:16px 32px}
+/* MAIN */
+.main{max-width:1200px;margin:0 auto;padding:20px 32px}
 
-/* TEAM FILTER TABS */
-.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.tab{display:inline-flex;align-items:center;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:1.5px solid var(--border);background:var(--white);color:var(--text2)}
+/* STATS BAR */
+.stats-bar{display:flex;align-items:center;gap:6px;margin-bottom:20px;padding:12px 18px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.stat-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text2)}
+.stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.stat-dot.hoog{background:var(--red)}
+.stat-dot.medium{background:var(--orange)}
+.stat-dot.laag{background:var(--green)}
+.stat-sep{width:1px;height:14px;background:var(--border);margin:0 4px}
+.stat-total{font-size:12px;font-weight:700;color:var(--text)}
+.stat-time{margin-left:auto;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.live-dot{width:7px;height:7px;background:var(--orange);border-radius:50%;animation:pulse 2s infinite;margin-right:4px;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{display:inline-flex;align-items:center;padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;border:1.5px solid var(--border);background:var(--white);color:var(--text2);user-select:none}
 .tab:hover{border-color:var(--orange);color:var(--orange)}
 .tab .count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:10px;font-size:11px;margin-left:6px;padding:0 6px;background:var(--bg);color:var(--muted)}
 
-/* Active tab per radio state */
+/* Active tab */
 #t-alle:checked ~ .main .tab-alle,
 #t-ops:checked ~ .main .tab-ops,
 #t-klant:checked ~ .main .tab-klant,
@@ -59,26 +60,52 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 #t-wh:checked ~ .main .tab-wh .count
 {background:rgba(255,255,255,.3);color:#fff}
 
-/* Card filtering per radio state */
+/* Card filtering */
 #t-ops:checked ~ .main .email-card:not([data-team="Operations"]){display:none}
 #t-klant:checked ~ .main .email-card:not([data-team="Klantenservice"]){display:none}
 #t-fin:checked ~ .main .email-card:not([data-team="Financiën"]){display:none}
 #t-wh:checked ~ .main .email-card:not([data-team="Warehouse"]){display:none}
 
-/* EMAIL CARDS */
+/* CARD ENTRANCE ANIMATION */
+@keyframes card-in{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
 .feed{display:flex;flex-direction:column;gap:12px}
-.email-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:20px 24px;box-shadow:var(--shadow);transition:all .15s;position:relative;overflow:hidden}
-.email-card:hover{box-shadow:var(--shadow-lg);border-color:#d0cdc6}
+.email-card{
+  background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:20px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  animation:card-in .4s ease both;
+}
+.email-card:nth-child(1){animation-delay:.05s}
+.email-card:nth-child(2){animation-delay:.12s}
+.email-card:nth-child(3){animation-delay:.19s}
+.email-card:nth-child(4){animation-delay:.26s}
+.email-card:nth-child(5){animation-delay:.33s}
+.email-card:hover{box-shadow:var(--shadow-lg);border-color:#d0cdc6;transition:box-shadow .2s,border-color .2s}
 .email-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r)}
 .email-card.cat-vertraging::before{background:var(--red)}
 .email-card.cat-prijswijziging::before{background:var(--orange)}
 .email-card.cat-productupdate::before{background:var(--blue)}
 
-.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:12px}
+/* UNREAD DOT */
+.unread-dot{position:absolute;top:18px;right:18px;width:9px;height:9px;background:var(--orange);border-radius:50%;box-shadow:0 0 0 2px var(--orange-light);transition:opacity .3s}
+.email-card.handled .unread-dot{opacity:0}
+
+/* HANDLED STATE */
+@keyframes card-handled{
+  0%{transform:scale(1)}50%{transform:scale(1.004)}100%{transform:scale(1)}
+}
+.email-card.handled{border-color:var(--green) !important;animation:card-handled .4s ease}
+.email-card.handled::before{background:var(--green) !important}
+.email-card.handled .card-action-wrap .action-btn{background:var(--green)}
+
+/* CARD CONTENT */
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:12px;padding-right:20px}
 .card-left{flex:1;min-width:0}
 .card-from{font-size:14px;font-weight:700;margin-bottom:2px}
 .card-company{font-size:12px;color:var(--muted)}
-.card-badges{display:flex;gap:6px;flex-shrink:0;align-items:center}
+.card-badges{display:flex;gap:6px;flex-shrink:0;align-items:center;flex-wrap:wrap}
 .badge{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:600}
 .badge.vertraging{background:var(--red-light);color:var(--red)}
 .badge.prijswijziging{background:var(--orange-light);color:var(--orange-dark)}
@@ -87,61 +114,87 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .badge-urg.hoog{background:var(--red-light);color:var(--red)}
 .badge-urg.medium{background:var(--orange-light);color:var(--orange)}
 .badge-urg.laag{background:var(--green-light);color:var(--green)}
-
+.card-date{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.card-meta-row{display:flex;align-items:center;gap:16px;margin-bottom:10px}
 .card-subject{font-size:14px;font-weight:600;margin-bottom:8px;color:var(--text)}
 .card-summary{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px}
-
 .card-facts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .fact-chip{padding:4px 12px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace;white-space:nowrap}
 
-.card-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border-light)}
-.card-route{display:flex;align-items:center;gap:6px}
+/* CARD BOTTOM */
+.card-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border-light);gap:12px}
+.card-route{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .route-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
 .route-team{display:flex;align-items:center;gap:5px;padding:5px 14px;background:var(--orange-light);border-radius:8px;font-size:12px;font-weight:700;color:var(--orange-dark)}
-.card-action{font-size:12px;color:var(--green);font-weight:500;max-width:50%;text-align:right;line-height:1.4}
-.card-date{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.card-meta-row{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+.card-action{font-size:12px;color:var(--green);font-weight:500;line-height:1.4}
+.card-action-wrap{display:flex;align-items:center;gap:12px;flex-shrink:0}
 
-/* EXPAND ORIGINAL — pure CSS via :has() */
+/* ACTION BUTTON */
+.action-btn{
+  padding:8px 18px;background:var(--orange);color:#fff;border:none;border-radius:var(--rs);
+  font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;
+  transition:background .2s,transform .1s,box-shadow .2s;
+  white-space:nowrap;display:inline-flex;align-items:center;gap:7px;min-width:148px;justify-content:center
+}
+.action-btn:hover:not(:disabled){background:var(--orange-dark);transform:translateY(-1px);box-shadow:0 4px 10px rgba(230,126,34,.3)}
+.action-btn:active:not(:disabled){transform:translateY(0)}
+.action-btn:disabled{cursor:default}
+
+/* Spinner */
+.btn-spin{width:11px;height:11px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ACTION CONFIRM */
+.action-confirm{
+  font-size:11px;color:var(--green);font-weight:500;
+  margin-top:10px;opacity:0;max-height:0;overflow:hidden;
+  transition:opacity .5s .1s,max-height .4s;
+  display:flex;align-items:center;gap:6px
+}
+.email-card.handled .action-confirm{opacity:1;max-height:30px}
+
+/* EXPAND ORIGINAL */
 .orig-toggle{display:none}
-.card-orig{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.card-orig{max-height:0;overflow:hidden;transition:max-height .35s ease}
 .email-card:has(.orig-toggle:checked) .card-orig{max-height:600px}
-.expand-btn{font-size:11px;color:var(--orange);font-weight:600;cursor:pointer;font-family:inherit;padding:0;user-select:none}
+.expand-btn{font-size:11px;color:var(--orange);font-weight:600;cursor:pointer;font-family:inherit;padding:0;user-select:none;white-space:nowrap}
 .expand-btn:hover{color:var(--orange-dark)}
 .lbl-close{display:none}
 .email-card:has(.orig-toggle:checked) .lbl-open{display:none}
 .email-card:has(.orig-toggle:checked) .lbl-close{display:inline}
-
 .orig-content{padding:16px 20px;margin-top:14px;background:var(--bg);border-radius:var(--rs);border:1px solid var(--border)}
 .orig-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .orig-content pre{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.7;color:var(--text2);white-space:pre-wrap}
 
+/* PROCESSING STATE (pulse border) */
+@keyframes border-pulse{
+  0%,100%{box-shadow:var(--shadow)}
+  50%{box-shadow:0 0 0 3px rgba(230,126,34,.2),var(--shadow-lg)}
+}
+.email-card.processing{animation:border-pulse 1.1s ease-in-out infinite;border-color:var(--orange) !important}
+
 /* RESPONSIVE */
 @media(max-width:768px){
   .main{padding:16px}
-  .tabs{gap:6px;margin-bottom:16px}
+  .stats-bar{flex-wrap:wrap;gap:8px;padding:10px 14px}
+  .stat-time{margin-left:0;width:100%}
+  .tabs{gap:6px;margin-bottom:14px}
   .tab{padding:6px 12px;font-size:12px}
-  .feed{gap:10px}
   .email-card{padding:14px 16px}
-  .card-top{flex-direction:column;gap:8px}
-  .card-badges{flex-wrap:wrap;justify-content:flex-start}
-  .card-date{font-size:10px}
-  .card-from{font-size:13px}
-  .card-company{font-size:11px}
+  .card-top{flex-direction:column;gap:8px;padding-right:28px}
+  .card-badges{flex-wrap:wrap}
   .card-subject{font-size:13px}
   .card-summary{font-size:12px;margin-bottom:10px}
   .card-facts{gap:6px;margin-bottom:10px}
   .fact-chip{font-size:10px;padding:3px 8px}
-  .card-bottom{flex-direction:column;gap:8px;align-items:flex-start}
-  .card-action{max-width:100%;text-align:left;font-size:11px}
-  .card-meta-row{margin-bottom:6px}
-  .route-team{font-size:11px;padding:4px 10px}
+  .card-bottom{flex-direction:column;align-items:flex-start;gap:10px}
+  .card-action-wrap{width:100%;justify-content:flex-end}
+  .action-btn{min-width:0}
 }
 </style>
 </head>
 <body>
 
-<!-- HIDDEN RADIO BUTTONS — state machine voor tab-filtering -->
 <input type="radio" name="team" id="t-alle" class="team-radio" checked>
 <input type="radio" name="team" id="t-ops" class="team-radio">
 <input type="radio" name="team" id="t-klant" class="team-radio">
@@ -149,6 +202,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <input type="radio" name="team" id="t-wh" class="team-radio">
 
 <div class="main">
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <span class="live-dot"></span>
+    <span class="stat-total">5 nieuwe mails</span>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><span class="stat-dot hoog"></span>2 hoog</div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><span class="stat-dot medium"></span>1 medium</div>
+    <div class="stat-sep"></div>
+    <div class="stat-item"><span class="stat-dot laag"></span>1 laag</div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">2 vertragingen · 2 prijswijzigingen · 1 product update</div>
+    <span class="stat-time">13 apr 2026 · gegenereerd om 09:04</span>
+  </div>
+
+  <!-- TABS -->
   <div class="tabs">
     <label for="t-alle" class="tab tab-alle">Alle mails<span class="count">5</span></label>
     <label for="t-ops" class="tab tab-ops">⚙️ Operations<span class="count">1</span></label>
@@ -156,10 +226,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     <label for="t-fin" class="tab tab-fin">💰 Financiën<span class="count">2</span></label>
     <label for="t-wh" class="tab tab-wh">🏭 Warehouse<span class="count">1</span></label>
   </div>
+
   <div class="feed">
 
     <!-- KAART 1: Marco Bakker — Klantenservice -->
     <div class="email-card cat-vertraging" data-team="Klantenservice">
+      <span class="unread-dot"></span>
       <div class="card-top">
         <div class="card-left">
           <div class="card-meta-row">
@@ -184,12 +256,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
           <span class="route-label">Gerouteerd naar</span>
           <span class="route-team">📞 Klantenservice</span>
         </div>
-        <div style="display:flex;align-items:center;gap:16px">
+        <div class="card-action-wrap">
           <div class="card-action">💡 Blokker DC direct informeren over vertraagde levering</div>
+          <button class="action-btn"
+            data-type="inform"
+            data-confirm="Blokker DC geïnformeerd over vertraagde levering"
+            onclick="handleEmail(this)">Klant informeren →</button>
           <input type="checkbox" id="orig1" class="orig-toggle">
           <label for="orig1" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
+      <div class="action-confirm"></div>
       <div class="card-orig">
         <div class="orig-content">
           <div class="orig-label">✉️ Origineel bericht</div>
@@ -216,6 +293,7 @@ De Vries Transport</pre>
 
     <!-- KAART 2: Jan de Vries — Operations -->
     <div class="email-card cat-vertraging" data-team="Operations">
+      <span class="unread-dot"></span>
       <div class="card-top">
         <div class="card-left">
           <div class="card-meta-row">
@@ -240,12 +318,17 @@ De Vries Transport</pre>
           <span class="route-label">Gerouteerd naar</span>
           <span class="route-team">⚙️ Operations</span>
         </div>
-        <div style="display:flex;align-items:center;gap:16px">
+        <div class="card-action-wrap">
           <div class="card-action">💡 Ontvanger informeren, warehouse-slot 16 april checken</div>
+          <button class="action-btn"
+            data-type="forward"
+            data-confirm="Doorgezet naar Operations · warehouse-slot 16 april geblokkeerd"
+            onclick="handleEmail(this)">Doorsturen →</button>
           <input type="checkbox" id="orig2" class="orig-toggle">
           <label for="orig2" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
+      <div class="action-confirm"></div>
       <div class="card-orig">
         <div class="orig-content">
           <div class="orig-label">✉️ Origineel bericht</div>
@@ -259,7 +342,7 @@ Nieuwe ETA: 16 april 2026
 Reden: congestie terminal Europoort. Het schip ligt momenteel op de rede in afwachting van een ligplaats.
 
 Booking reference: BK-2026-08834
-Inhoud: 1x 40ft HC — consumentenelektronica
+Inhoud: 1x 40ft HC, consumentenelektronica
 
 Wij houden u op de hoogte van verdere ontwikkelingen.
 
@@ -272,6 +355,7 @@ Van Transport B.V.</pre>
 
     <!-- KAART 3: Sandra Willems — Financiën -->
     <div class="email-card cat-prijswijziging" data-team="Financiën">
+      <span class="unread-dot"></span>
       <div class="card-top">
         <div class="card-left">
           <div class="card-meta-row">
@@ -296,12 +380,17 @@ Van Transport B.V.</pre>
           <span class="route-label">Gerouteerd naar</span>
           <span class="route-team">💰 Financiën</span>
         </div>
-        <div style="display:flex;align-items:center;gap:16px">
+        <div class="card-action-wrap">
           <div class="card-action">💡 Tarievenlijst vergelijken, heronderhandeling overwegen</div>
+          <button class="action-btn"
+            data-type="forward"
+            data-confirm="Doorgezet naar Financiën · tarievenanalyse gestart"
+            onclick="handleEmail(this)">Doorsturen →</button>
           <input type="checkbox" id="orig3" class="orig-toggle">
           <label for="orig3" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
+      <div class="action-confirm"></div>
       <div class="card-orig">
         <div class="orig-content">
           <div class="orig-label">✉️ Origineel bericht</div>
@@ -327,6 +416,7 @@ Beekman Logistics</pre>
 
     <!-- KAART 4: Annemiek Groen — Financiën -->
     <div class="email-card cat-prijswijziging" data-team="Financiën">
+      <span class="unread-dot"></span>
       <div class="card-top">
         <div class="card-left">
           <div class="card-meta-row">
@@ -351,12 +441,17 @@ Beekman Logistics</pre>
           <span class="route-label">Gerouteerd naar</span>
           <span class="route-team">💰 Financiën</span>
         </div>
-        <div style="display:flex;align-items:center;gap:16px">
+        <div class="card-action-wrap">
           <div class="card-action">💡 Impact berekenen, alternatieve warehouses vergelijken</div>
+          <button class="action-btn"
+            data-type="forward"
+            data-confirm="Doorgezet naar Financiën · impactberekening gestart"
+            onclick="handleEmail(this)">Doorsturen →</button>
           <input type="checkbox" id="orig4" class="orig-toggle">
           <label for="orig4" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
+      <div class="action-confirm"></div>
       <div class="card-orig">
         <div class="orig-content">
           <div class="orig-label">✉️ Origineel bericht</div>
@@ -381,6 +476,7 @@ Warehousing Plus B.V.</pre>
 
     <!-- KAART 5: Pieter Kolen — Warehouse -->
     <div class="email-card cat-productupdate" data-team="Warehouse">
+      <span class="unread-dot"></span>
       <div class="card-top">
         <div class="card-left">
           <div class="card-meta-row">
@@ -405,12 +501,17 @@ Warehousing Plus B.V.</pre>
           <span class="route-label">Gerouteerd naar</span>
           <span class="route-team">🏭 Warehouse</span>
         </div>
-        <div style="display:flex;align-items:center;gap:16px">
+        <div class="card-action-wrap">
           <div class="card-action">💡 Beoordelen of demo inplannen zinvol is voor vervanging huidig materieel</div>
+          <button class="action-btn"
+            data-type="plan"
+            data-confirm="Demo ETV 216i ingepland · uitnodiging verstuurd naar Warehouse"
+            onclick="handleEmail(this)">Demo inplannen →</button>
           <input type="checkbox" id="orig5" class="orig-toggle">
           <label for="orig5" class="expand-btn"><span class="lbl-open">Toon origineel ▾</span><span class="lbl-close">Verberg origineel ▴</span></label>
         </div>
       </div>
+      <div class="action-confirm"></div>
       <div class="card-orig">
         <div class="orig-content">
           <div class="orig-label">✉️ Origineel bericht</div>
@@ -437,5 +538,52 @@ Jungheinrich Nederland</pre>
   </div>
 </div>
 
+<script>
+var stepSets = {
+  inform: [
+    'Bericht opstellen...',
+    'Verzenden naar klant...',
+    'Ontvangst bevestigd...'
+  ],
+  forward: [
+    'Doorsturen naar team...',
+    'Team notificeren...',
+    'Bevestiging ontvangen...'
+  ],
+  plan: [
+    'Beschikbaarheid checken...',
+    'Agenda blokkeren...',
+    'Uitnodiging verzonden...'
+  ]
+};
+
+function handleEmail(btn) {
+  var card = btn.closest('.email-card');
+  if (card.classList.contains('handled') || card.classList.contains('processing')) return;
+
+  var type = btn.dataset.type || 'forward';
+  var confirmText = btn.dataset.confirm || 'Verwerkt';
+  var steps = stepSets[type];
+
+  card.classList.add('processing');
+  btn.disabled = true;
+
+  steps.forEach(function(text, i) {
+    setTimeout(function() {
+      btn.innerHTML = '<span class="btn-spin"></span>' + text;
+    }, i * 950);
+  });
+
+  setTimeout(function() {
+    card.classList.remove('processing');
+    card.classList.add('handled');
+    btn.innerHTML = '\u2713 Behandeld';
+
+    var now = new Date();
+    var t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    card.querySelector('.action-confirm').textContent = '\u2713 ' + confirmText + ' \u00b7 ' + t;
+  }, steps.length * 950 + 400);
+}
+</script>
 </body>
 </html>
